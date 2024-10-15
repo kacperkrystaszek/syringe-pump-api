@@ -26,6 +26,11 @@ class Server:
         
     def run(self) -> None:
         clientsocket, address = self._socket.accept()
+        self.loopback[clientsocket] = subprocess.Popen(
+            ["virtualserialports", "-l", "1"], 
+            stdout=sys.stdout, 
+            stderr=sys.stderr
+        )
         while True:
             message = clientsocket.recv(1024)
             message = message.decode().strip("\n")
@@ -33,11 +38,6 @@ class Server:
             if self.STARTPUMP.match(message):
                 port = self.STARTPUMP.match(message).group("port")
                 try:
-                    self.loopback[port] = subprocess.Popen(
-                        ["virtualserialports", "-l", "1"], 
-                        stdout=sys.stdout, 
-                        stderr=sys.stderr
-                    )
                     time.sleep(2)
                     self._pumps[port] = PumpHandler(port)
                 except SerialException as exc:
