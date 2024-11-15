@@ -1,0 +1,1647 @@
+{
+    "server_config": {
+        "server_ip": "localhost",
+        "port": 4000,
+        "max_pumps": 16,
+        "loopback": true,
+        "command_delimiter": "!"
+    },
+    "pump_config":{
+        "serial_port_config": {
+            "baudrate": 9600,
+            "parity": "N",
+            "stopbits": 1,
+            "bytesize": 8,
+            "timeout": 3
+        },
+        "crc_config": {
+            "width": 16,
+            "polynomial": 69665,
+            "init_value": 65535,
+            "final_xor_value": 0,
+            "reverse_input": false,
+            "reverse_output": false
+        },
+        "command_set": {
+            "ALARM": {
+                "response": "ALARM^<AlarmCode>^<AlarmOrigin>^<AlarmNature>",
+                "description": "Query description of latest alarm"
+            },
+            "ALARM_CLEAR^<AlarmCode>": {
+                "response": "ALARM_CLEAR^<AlarmCode>",
+                "description": "Clear currently active alarm"
+            },
+            "ALARM_SP^<ActivationStatus>": {
+                "response": "ALARM_SP^<ActivationStatus>",
+                "description": "Activate / de-activate safety processor alarm"
+            },
+            "AUDIO_QUIET": {
+                "response": "AUDIO_QUIET^<EnableStatus>",
+                "description": "Query whether or not quiet mode is enabled"
+            },
+            "AUDIO_QUIET^<EnableStatus>": {
+                "response": "AUDIO_QUIET^<EnableStatus>",
+                "description": "Specify whether or not quiet mode is enabled"
+            },
+            "AUDIO_SPEAKER_TEST^<ActivationStatus>": {
+                "response": "AUDIO_SPEAKER_TEST^<ActivationStatus>",
+                "description": "Activate / de-activate speaker test tone"
+            },
+            "AUDIO_VOL": {
+                "response": "AUDIO_VOL^<AudioVolume>",
+                "description": "Query current audio volume"
+            },
+            "AUDIO_VOL^<AudioVolume>": {
+                "response": "AUDIO_VOL^<AudioVolume>",
+                "description": "Set audio volume"
+            },
+            "COMMS_PROTOCOL": {
+                "response": "COMMS_PROTOCOL^<CommsProtocolID>",
+                "description": "Query the revision level of the communications protocol in use"
+            },
+            "COMMS_RESPONSE_MAX": {
+                "response": "COMMS_RESPONSE_MAX^<ResponseTimeValue>^<ResponseTimeUnits>",
+                "description": "Query maximum syringe pump communications response time."
+            },
+            "COMMS_RS232_LOOP_TEST": {
+                "response": "COMMS_RS232_LOOP_TEST^<SuccessStatus>",
+                "description": "Perform RS232 loopback test"
+            },
+            "DISPLAY_ILLUM": {
+                "response": "DISPLAY_ILLUM^<DisplayIlluminationLevel>",
+                "description": "Query current display illumination"
+            },
+            "DISPLAY_ILLUM^<DisplayIlluminationLevel>": {
+                "response": "DISPLAY_ILLUM^<DisplayIlluminationLevel>",
+                "description": "Set display illumination to specified level"
+            },
+            "DISPLAY_TEST": {
+                "response": "DISPLAY_TEST^<SuccessStatus>",
+                "description": "Perform display test"
+            },
+            "DRUG_LIB^<DrugNo>": {
+                "response": "DRUG_LIB^<DrugNo>^<DrugName>^<EnableStatus>^<SelectStatus>^<NumDrugsDefined>",
+                "description": "Query details of specified drug / Query number of drugs defined."
+            },
+            "DRUG_LIB_ADD^<DrugName>": {
+                "response": "DRUG_LIB_ADD^<DrugName>",
+                "description": "Add drug to drug library"
+            },
+            "DRUG_LIB_BOLUS^<DrugName>": {
+                "response": "DRUG_LIB_BOLUS^<DrugName>^<DrugBolusVolumeLimitValue>^<VolumeUnits>^<DrugBolusRateDfltValue>^<BolusRateUnits>^<HandsFree>",
+                "description": "Query drug bolus configuration of a specified drug."
+            },
+            "DRUG_LIB_BOLUS^<DrugName>^<DrugBolusVolumeLimitValue>^<VolumeUnits>^<DrugBolusRateDfltValue>^<BolusRateUnits>": {
+                "response": "DRUG_LIB_BOLUS^<DrugName>^<DrugBolusVolumeLimitValue>^<VolumeUnits>^<DrugBolusRateDfltValue>^<BolusRateUnits>",
+                "description": "Configure drug bolus values of a specified drug."
+            },
+            "DRUG_LIB_CLEARALL": {
+                "response": "DRUG_LIB_CLEARALL",
+                "description": "Clear entire drug library"
+            },
+            "DRUG_LIB_CONC^<DrugName>": {
+                "response": "DRUG_LIB_CONC^<DrugName>^<ConcMinValue>^<ConcDfltValue>^<ConcMaxValue>^<ConcUnits>",
+                "description": "Query concentration configuration of specified drug."
+            },
+            "DRUG_LIB_CONC^<DrugName>^<DrugBolusVolumeLimitValue>^<VolumeUnits>^<DrugBolusRateDfltValue>^<BolusRateUnits>": {
+                "response": "DRUG_LIB_CONC^<DrugName>^<ConcMinValue>^<ConcDfltValue>^<ConcMaxValue>^<ConcUnits>",
+                "description": "Configure concentration values of specified drug."
+            },
+            "DRUG_LIB_DOSE_RATE^<DrugName>": {
+                "response": "DRUG_LIB_DOSE_RATE^<DrugName>^<DoseRateMaxValue>^<DoseRateDfltValue>^<DoseRateMinValue>^<DoseRateUnits>",
+                "description": "Query dose rate configuration of specified drug."
+            },
+            "DRUG_LIB_DOSE_RATE^<DrugName>^<DoseRateMaxValue>^<DoseRateDfltValue>^<DoseRateMinValue>^<DoseRateUnits>": {
+                "response": "DRUG_LIB_DOSE_RATE^<DrugName>^<DoseRateMaxValue>^<DoseRateDfltValue>^<DoseRateMinValue>^<DoseRateUnits>",
+                "description": "Configure dose rate values for specified drug."
+            },
+            "DRUG_LIB_ENABLE^<DrugName>": {
+                "response": "DRUG_LIB_ENABLE^<DrugName>^<EnableStatus>",
+                "description": "Query whether or not specified drug is enabled."
+            },
+            "DRUG_LIB_ENABLE^<DrugName>^<EnableStatus>": {
+                "response": "DRUG_LIB_ENABLE^<DrugName>^<EnableStatus>",
+                "description": "Enable / disable named drug."
+            },
+            "DRUG_LIB_INDUCTION^<DrugName>": {
+                "response": "DRUG_LIB_INDUCTION^<DrugName>^<InductionAmount>^<InductionUnits>^<InductionTime>^<InductionTimeUnits>^<PauseAfterInduction>^<MaintenanceRate>^<MaintenanceRateUnits>",
+                "description": "Query an induction drug (TIVA only)"
+            },
+            "DRUG_LIB_INDUCTION^<DrugName>^<InductionAmount>^<InductionUnits>^<InductionTime>^<InductionTimeUnits>^<PauseAfterInduction>^<MaintenanceRate>^<MaintenanceRateUnits>": {
+                "response": "DRUG_LIB_INDUCTION^<DrugName>^<InductionAmount>^<InductionUnits>^<InductionTime>^<InductionTimeUnits>^<PauseAfterInduction>^<MaintenanceRate>^<MaintenanceRateUnits>",
+                "description": "Configure an induction drug (TIVA only)"
+            },
+            "DRUG_LIB_NUMDRUGS": {
+                "response": "DRUG_LIB_NUMDRUGS^<NumDrugsDefined>^<NumDrugsEnabled>",
+                "description": "Query numbers of drugs defined and enabled in drug library."
+            },
+            "DRUG_LIB_OCCLN_ALARM^<DrugName>": {
+                "response": "DRUG_LIB_OCCLN_ALARM^<DrugName>^<DrugOcclusionPressure>^<PressureUnits>",
+                "description": "Query the occlusion alarm setting of a specified drug."
+            },
+            "DRUG_LIB_OCCLN_ALARM^<DrugName>^<DrugOcclusionPressure>^<PressureUnits>": {
+                "response": "DRUG_LIB_OCCLN_ALARM^<DrugName>^<DrugOcclusionPressure>^<PressureUnits>",
+                "description": "Configure the occlusion alarm setting of a specified drug, including specification of whether or not the alarm level shall be used."
+            },
+            "DRUG_SELECT": {
+                "response": "DRUG_SELECT^<ActivationStatus>^<DrugName>^<ConcValue>^<ConcUnits>^<DoseRateValue>^<DoseRateUnits>",
+                "description": "Query current drug selection (full protocol)"
+            },
+            "DRUG_SETUP": {
+                "response": "DRUG_SETUP^<ActivationStatus>^<DrugName>^<ConcValue>^<ConcUnits>^<DoseRateValue>^<DoseRateUnits>",
+                "description": "Query setup (name and dosing)"
+            },
+            "DRUG_SETUP^<ActivationStatus>^<DrugName>^<ConcValue>^<ConcUnits>^<DoseRateValue>^<DoseRateUnits>": {
+                "response": "DRUG_SETUP^<ActivationStatus>^<DrugName>^<ConcValue>^<ConcUnits>^<DoseRateValue>^<DoseRateUnits>",
+                "description": "Setup drug (name and dosing)"
+            },
+            "DRUG_SERVICES": {
+                "response": "DRUG_SERVICES^<DrugServiceLevel",
+                "description": "Query the level of drug-related services supported by the syringe pump"
+            },
+            "DRVENG": {
+                "response": "DRVENG^<DrvEngageStatus>",
+                "description": "Query drive engagement status"
+            },
+            "INF": {
+                "response": "INF^<InstSerialNo>^<AlarmNotification>^<InfusionMode>^<InfusionRateValue>^<InfusionRateUnits>^<DrugName>^<VI_Value>^<VI_Units>^<PressureValue>^<PressureUnits>^<InfusionTimeRemaining>^<LogType>^<LatestLogEntryID>",
+                "description": "Query current infusion status\nSyringe pump serial no.\nAlarm / Event status\nCurrent infusion mode\nThe rate at which fluid is currently being delivered (n.b. not the same as the infusion 'set' rate).\nCurrent drug name\nVolume infused\nCurrent line pressure\nInfusion time remaining\nID of latest event log entry."
+            },
+            "INF_BACKOFF": {
+                "response": "INF_BACKOFF^<EnableStatus>",
+                "description": "Query whether or not backoff is enabled"
+            },
+            "INF_BACKOFF^<EnableStatus>": {
+                "response": "INF_BACKOFF^<EnableStatus>",
+                "description": "Enable / disable backoff"
+            },
+            "INF_BOLUS": {
+                "response": "INF_BOLUS^<EnableStatus>",
+                "description": "Query if bolus is enabled or disabled. See note 21 for TIVA information."
+            },
+            "INF_BOLUS^<EnableStatus>": {
+                "response": "INF_BOLUS^<EnableStatus>",
+                "description": "Specify whether bolus is or is not enabled"
+            },
+            "INF_BOLUS_CAP_RATE": {
+                "response": "INF_BOLUS_CAP_RATE^<BolusRateValue>^<BolusRateUnits>",
+                "description": "Query bolus cap rate"
+            },
+            "INF_BOLUS_CAP_RATE^<BolusRateValue>^<BolusRateUnits>": {
+                "response": "INF_BOLUS_CAP_RATE^<BolusRateValue>^<BolusRateUnits>",
+                "description": "Set bolus cap rate"
+            },
+            "INF_BOLUS_DEF_RATE": {
+                "response": "INF_BOLUS_DEF_RATE^<BolusRateValue>^<BolusRateUnits>",
+                "description": "Query default bolus rate"
+            },
+            "INF_BOLUS_DEF_RATE^<BolusRateValue>^<BolusRateUnits>": {
+                "response": "INF_BOLUS_DEF_RATE^<BolusRateValue>^<BolusRateUnits>",
+                "description": "Set default bolus rate"
+            },
+            "INF_BOLUS_VOL_LIMIT": {
+                "response": "INF_BOLUS_VOL_LIMIT^<BolusVolumeLimitValue>^<VolumeUnits>",
+                "description": "Query bolus volume limit"
+            },
+            "INF_BOLUS_VOL_LIMIT^<BolusVolumeLimitValue>^<VolumeUnits>": {
+                "response": "INF_BOLUS_VOL_LIMIT^<BolusVolumeLimitValue>^<VolumeUnits>",
+                "description": "Set bolus volume limit"
+            },
+            "INF_CAP_RATE": {
+                "response": "INF_CAP_RATE^<InfusionRateValue>^<InfusionRateUnits>",
+                "description": "Query infusion cap rate"
+            },
+            "INF_CAP_RATE^<InfusionRateValue>^<InfusionRateUnits>": {
+                "response": "INF_CAP_RATE^<InfusionRateValue>^<InfusionRateUnits>",
+                "description": "Set infusion cap rate"
+            },
+            "INF_HANDSFREE": {
+                "response": "INF_HANDSFREE^<EnableStatus>",
+                "description": "Query whether Handsfree is enabled or not"
+            },
+            "INF_HANDSFREE^<EnableStatus>": {
+                "response": "INF_HANDSFREE^<EnableStatus>",
+                "description": "Set Handsfree"
+            },
+            "INF_KVO": {
+                "response": "INF_KVO^<EnableStatus>",
+                "description": "Query whether or not KVO delivery is enabled"
+            },
+            "INF_KVO^<EnableStatus>": {
+                "response": "INF_KVO^<EnableStatus>",
+                "description": "Enable / disable KVO delivery"
+            },
+            "INF_KVO_RATE": {
+                "response": "INF_KVO_RATE^<InfusionRateValue>^<InfusionRateUnits>",
+                "description": "Query KVO rate"
+            },
+            "INF_KVO_RATE^<InfusionRateValue>^<InfusionRateUnits>": {
+                "response": "INF_KVO_RATE^<InfusionRateValue>^<InfusionRateUnits>",
+                "description": "Set KVO rate"
+            },
+            "INF_MANUALBOLUS": {
+                "response": "INF_MANUALBOLUS^<EnableStatus>",
+                "description": "Query whether Manual Bolus is enabled or not"
+            },
+            "INF_MANUALBOLUS^<EnableStatus>": {
+                "response": "INF_MANUALBOLUS^<EnableStatus>",
+                "description": "Set Handsfree"
+            },
+            "INF_PURGE_PRIME_SYRINGE": {
+                "response": "INF_PURGE_PRIME_SYRINGE",
+                "description": "Query whether or not syringe/set priming is enabled"
+            },
+            "INF_PURGE_PRIME_SYRINGE^<EnableStatus>": {
+                "response": "INF_PURGE_PRIME_SYRINGE^<EnableStatus>",
+                "description": "Set purge rate"
+            },
+            "INF_PURGE_RATE": {
+                "response": "INF_PURGE_RATE^<PurgeRateValue>^<PurgeRateUnits>",
+                "description": "Query purge rate"
+            },
+            "INF_PURGE_RATE^<PurgeRateValue>^<PurgeRateUnits>": {
+                "response": "INF_PURGE_RATE^<PurgeRateValue>^<PurgeRateUnits>",
+                "description": "Set purge rate"
+            },
+            "INF_PURGE_VOL_LIMIT": {
+                "response": "INF_PURGE_VOL_LIMIT^<VolumeValue>^<VolumeUnits>",
+                "description": "Query purge volume limit"
+            },
+            "INF_PURGE_VOL_LIMIT^<VolumeValue>^<VolumeUnits>": {
+                "response": "INF_PURGE_VOL_LIMIT^<VolumeValue>^<VolumeUnits>",
+                "description": "Set purge volume limit"
+            },
+            "INF_RATE": {
+                "response": "INF_RATE^<InfusionRateValue>^<InfusionRateUnits>",
+                "description": "Query infusion rate"
+            },
+            "INF_RATE^<InfusionRateValue>^<InfusionRateUnits>": {
+                "response": "INF_RATE^<InfusionRateValue>^<InfusionRateUnits>",
+                "description": "Set infusion rate"
+            },
+            "INF_RATE_ACHIEVABLE": {
+                "response": "INF_RATE_ACHIEVABLE^<SuccessStatus>",
+                "description": "Query whether set infusion rate is achievable"
+            },
+            "INF_RATE_MAX_SYRINGE": {
+                "response": "INF_RATE_MAX_SYRINGE^<InfusionRateValue>^<InfusionRateUnits>",
+                "description": "Query maximum infusion rate that is permitted for the currently confirmed syringe. Note that this rate may be higher than the syringe pump itself can support."
+            },
+            "INF_START": {
+                "response": "INF_START",
+                "description": "Start infusion"
+            },
+            "INF_STOP": {
+                "response": "INF_STOP",
+                "description": "Stop infusion"
+            },
+            "INF_TITRATE": {
+                "response": "INF_TITRATE^<EnableStatus>",
+                "description": "Query whether or not titration is enabled"
+            },
+            "INF_TITRATE^<EnableStatus>": {
+                "response": "INF_TITRATE^<EnableStatus>",
+                "description": "Enable / disable titration"
+            },
+            "INF_VI": {
+                "response": "INF_VI^<VI_Value>^<VI_Units>",
+                "description": "Query volume infused"
+            },
+            "INF_VI_CLEAR": {
+                "response": "INF_VI_CLEAR",
+                "description": "Clear volume infused"
+            },
+            "INF_VI_CLEAR_CTRL": {
+                "response": "INF_VI_CLEAR_CTRL^<EnableStatus>",
+                "description": "Enable / disable VI clearing from syringe pump keypad"
+            },
+            "INF_VI_CLEAR_CTRL^<EnableStatus>": {
+                "response": "INF_VI_CLEAR_CTRL^<EnableStatus>",
+                "description": "Enable / disable VI clearing from syringe pump keypad"
+            },
+            "INF_VTBI": {
+                "response": "INF_VTBI^<ActivationStatus>^<VolumeValue>^<VolumeUnits>^<VTBI_EndAction>",
+                "description": "Query volume remaining to be infused"
+            },
+            "INF_VTBI^<ActivationStatus>^<VolumeValue>^<VolumeUnits>^<VTBI_EndAction>": {
+                "response": "INF_VTBI^<ActivationStatus>^<VolumeValue>^<VolumeUnits>^<VTBI_EndAction>",
+                "description": "Query volume remaining to be infused"
+            },
+            "INF_VTBI^<ActivationStatus>": {
+                "response": "INF_VTBI^<ActivationStatus>",
+                "description": "De-activate VTBI"
+            },
+            "INF_VTBI_CLEAR": {
+                "response": "INF_VTBI_CLEAR^<ActivationStatus>",
+                "description": "Query whether or not VTBI is to be cleared after infusion"
+            },
+            "INF_VTBI_CLEAR^<ActivationStatus>": {
+                "response": "INF_VTBI_CLEAR^<ActivationStatus>",
+                "description": "Query whether or not VTBI is to be cleared after infusion"
+            },
+            "INST_DEDICATE": {
+                "response": "INST_DEDICATE^<DedicationSetting>",
+                "description": "Query dedication setting"
+            },
+            "INST_DEDICATE^<DedicationSetting>": {
+                "response": "INST_DEDICATE^<DedicationSetting>",
+                "description": "Query dedication setting"
+            },
+            "INST_HOSPNAME": {
+                "response": "INST_HOSPNAME^<HospName>",
+                "description": "Query hospital name"
+            },
+            "INST_HOSPNAME^<HospName>": {
+                "response": "INST_HOSPNAME^<HospName>",
+                "description": "Query hospital name"
+            },
+            "INST_MANUFACTURER": {
+                "response": "INST_MANUFACTURER^<ManufacturerName>",
+                "description": "Query name of manufacturer"
+            },
+            "INST_NAME": {
+                "response": "INST_NAME^<InstModelIdentifier>",
+                "description": "Query the name of the syringe pump"
+            },
+            "INST_SERIALNO": {
+                "response": "INST_SERIALNO^<InstSerialNo>",
+                "description": "Query syringe pump serial number"
+            },
+            "INST_SERVICE_DATE": {
+                "response": "INST_SERVICE_DATE^<ServiceDate>",
+                "description": "Query service date"
+            },
+            "INST_SERVICE_DATE^<ServiceDate>": {
+                "response": "INST_SERVICE_DATE^<ServiceDate>",
+                "description": "Query service date"
+            },
+            "INST_SERVICE_MESSAGE": {
+                "response": "INST_SERVICE_MESSAGE",
+                "description": "Query service message"
+            },
+            "INST_SERVICE_MESSAGE^<ServiceMessage>": {
+                "response": "INST_SERVICE_MESSAGE^<ServiceMessage>",
+                "description": "Set service message"
+            },
+            "INST_SWVER^<ProgComponentID>": {
+                "response": "INST_SWVER^<ProgComponentID>^<VersionID>",
+                "description": "Query main processor software version of specified programmable component"
+            },
+            "INST_UNITREF": {
+                "response": "INST_UNITREF^<UnitReference>",
+                "description": "Query unit reference"
+            },
+            "INST_UNITREF^<UnitReference>": {
+                "response": "INST_UNITREF^<UnitReference>",
+                "description": "Set unit reference"
+            },
+            "INST_USAGE": {
+                "response": "INST_USAGE^<UsageSinceColdStartValue>^<UsageSinceUseMonResetValue>^<UsageUnits>",
+                "description": "Query usage"
+            },
+            "KEY^<KeyName>": {
+                "response": "KEY^<KeyName>^<PressStatus>",
+                "description": "Query status of specified key"
+            },
+            "LOG_NUM_RECORDS^<LogType>": {
+                "response": "LOG_NUM_RECORDS^<LogType>^<MaxNumLoggedRecords>^<NumLoggedRecords>^<LatestLogEntryID>",
+                "description": "Query number of logged records by type"
+            },
+            "LOG_READ^<LogType>^<LogEntryID>": {
+                "response": "LOG_READ^<LogType>^<LogEntryID>^<LogEntryMnemonic>^<LogTimeStamp>^<LogEntryDescription>",
+                "description": "Read specified logging record"
+            },
+            "LOG_USER_ACCESS^<LogType>": {
+                "response": "LOG_USER_ACCESS^<LogType>^<EnableStatus>",
+                "description": "Query user access by log type"
+            },
+            "LOG_USER_ACCESS^<LogType>^<EnableStatus>": {
+                "response": "LOG_USER_ACCESS^<LogType>^<EnableStatus>",
+                "description": "Specify whether or not user access is enabled"
+            },
+            "MOTOR_TEST_STATUS": {
+                "response": "MOTOR_TEST_STATUS^<MotorTestStatus>",
+                "description": "Query current state of test"
+            },
+            "NURSE_MODFIT": {
+                "response": "NURSE_MODFIT^<FitStatus>",
+                "description": "Query whether or not module is fitted"
+            },
+            "NURSE_MODFIT^<FitStatus>": {
+                "response": "NURSE_MODFIT^<FitStatus>",
+                "description": "Specify whether or not module is fitted"
+            },
+            "NURSE_RELAY_MODE": {
+                "response": "NURSE_RELAY_MODE^<NurseCallMode>",
+                "description": "Query relay operating mode"
+            },
+            "NURSE_RELAY_MODE^<NurseCallMode>": {
+                "response": "NURSE_RELAY_MODE^<NurseCallMode>",
+                "description": "Specify relay operating mode"
+            },
+            "NURSE_STATUS": {
+                "response": "NURSE_STATUS^<ActivationStatus>",
+                "description": "Query nurse call status"
+            },
+            "NURSE_STATUS^<ActivationStatus>": {
+                "response": "NURSE_STATUS^<ActivationStatus>",
+                "description": "Specify required state of nurse call"
+            },
+            "PATIENT_SERVICES": {
+                "response": "PATIENT_SERVICES^<PatientServiceLevel>",
+                "description": "Query patient-related services supported by syringe pump in use"
+            },
+            "PATIENT_WEIGHT": {
+                "response": "PATIENT_WEIGHT^<WeightValue>^<WeightUnits>",
+                "description": "Query patient weight"
+            },
+            "PATIENT_WEIGHT^<WeightValue>^<WeightUnits>": {
+                "response": "PATIENT_WEIGHT^<WeightValue>^<WeightUnits>",
+                "description": "Set patient weight"
+            },
+            "PATIENT_WEIGHT_DFLT": {
+                "response": "PATIENT_WEIGHT_DFLT^<WeightValue>^<WeightUnits>",
+                "description": "Query default patient weight"
+            },
+            "PATIENT_WEIGHT_DFLT^<WeightValue>^<WeightUnits>": {
+                "response": "PATIENT_WEIGHT_DFLT^<WeightValue>^<WeightUnits>",
+                "description": "Set default patient weight"
+            },
+            "PLNGRDRV_EOI^<ProportionValue>^<ProportionUnits>": {
+                "response": "PLNGRDRV_EOI^<ProportionValue>^<ProportionUnits>",
+                "description": "Set end of infusion point"
+            },
+            "PLNGRDRV_EOI": {
+                "response": "PLNGRDRV_EOI^<ProportionValue>^<ProportionUnits>",
+                "description": "Query end of infusion point"
+            },
+            "PLNGRDRV_NEOI": {
+                "response": "PLNGRDRV_NEOI^<TimeValue>^<TimeUnits>",
+                "description": "Query near end of infusion point"
+            },
+            "PLNGRDRV_NEOI^<TimeValue>^<TimeUnits>": {
+                "response": "PLNGRDRV_NEOI^<TimeValue>^<TimeUnits>",
+                "description": "Set near end of infusion point"
+            },
+            "PLNGRDRV_PLNGRPOSN": {
+                "response": "PLNGRDRV_PLNGRPOSN^<PlngrPosnValue>^<SensorVoltageValue>^<SensorVoltageUnits>",
+                "description": "Query current plunger position reading"
+            },
+            "PLNGRDRV_PLNGRPOSN_CALPT^<CalPtNo>": {
+                "response": "PLNGRDRV_PLNGRPOSN_CALPT^<CalPtNo>^<CalNumPts>^<CalStatus>^<PlngrPosnValue>^<SensorVoltageValue>^<SensorVoltageUnits>",
+                "description": "Query plunger position sensor calibration value"
+            },
+            "POWER_BAT_CAP": {
+                "response": "POWER_BAT_CAP^<BatChargeValue>^<BatChargeUnits>",
+                "description": "Query battery capacity"
+            },
+            "POWER_BAT_CHR": {
+                "response": "POWER_BAT_CHR^<BatChargeValue>^<BatChargeUnits>",
+                "description": "Query state of battery charge"
+            },
+            "POWER_BAT_VDQ": {
+                "response": "POWER_BAT_VDQ^<SuccessStatus>",
+                "description": "Query whether current voltage diagnostics are available"
+            },
+            "POWER_BAT_VOL": {
+                "response": "POWER_BAT_VOL^<VoltageValue>^<VoltageUnits>",
+                "description": "Query current battery voltage"
+            },
+            "POWER_MAINS": {
+                "response": "POWER_MAINS^<MainsStatus>",
+                "description": "Query status of AC mains supply"
+            },
+            "POWER_MAINS_ALARM": {
+                "response": "POWER_MAINS_ALARM^<EnableStatus>",
+                "description": "Query whether mains failure alarm is enabled"
+            },
+            "POWER_MAINS_ALARM^<EnableStatus>": {
+                "response": "POWER_MAINS_ALARM^<EnableStatus>",
+                "description": "Specify whether mains failure alarm is enabled"
+            },
+            "PRESSURE": {
+                "response": "PRESSURE^<PressureLevel>^<PressureValue>^<PressureUnits>",
+                "description": "Query current pressure (based on whichever sensor reading is currently being used)"
+            },
+            "PRESSURE_AUTO_OFFSET": {
+                "response": "PRESSURE_AUTO_OFFSET^<PressureValue>^<PressureUnits>",
+                "description": "Query current Auto Pressure setting"
+            },
+            "PRESSURE_AUTO_OFFSET^<PressureValue>^<PressureUnits>": {
+                "response": "PRESSURE_AUTO_OFFSET^<PressureValue>^<PressureUnits>",
+                "description": "Set Auto Pressure setting"
+            },
+            "PRESSURE_AUTO_SET": {
+                "response": "PRESSURE_AUTO_SET^<EnableStatus>",
+                "description": "Query whether Auto Set is enabled or disabled"
+            },
+            "PRESSURE_AUTO_SET^<EnableStatus>": {
+                "response": "PRESSURE_AUTO_SET^<EnableStatus>",
+                "description": "Set whether Auto Set is enabled or disabled"
+            },
+            "PRESSURE_DISC": {
+                "response": "PRESSURE_DISC^<FitStatus>^<PressureValue>^<PressureUnits>^<SensorVoltageValue>^<SensorVoltageUnits>^<SensorCurrentValue>^<SensorCurrentUnits>",
+                "description": "Query current line pressure reading and disc fitment status"
+            },
+            "PRESSURE_DISC_CALPT^<CalPtNo>": {
+                "response": "PRESSURE_DISC_CALPT^<CalPtNo>^<CalNumPts>^<CalStatus>^<PressureValue>^<PressureUnits>^<SensorVoltageValue>^<SensorVoltageUnits>",
+                "description": "Query line pressure sensor calibration value"
+            },
+            "PRESSURE_DISPLAY": {
+                "response": "PRESSURE_DISPLAY^<EnableStatus>",
+                "description": "Query whether pressure display is or is not enabled"
+            },
+            "PRESSURE_DISPLAY^<EnableStatus>": {
+                "response": "PRESSURE_DISPLAY^<EnableStatus>",
+                "description": "Set whether pressure display is or is not enabled"
+            },
+            "PRESSURE_LEVEL_CAP": {
+                "response": "PRESSURE_LEVEL_CAP^<PressureLevel>",
+                "description": "Query the pressure level cap setting (GH only)"
+            },
+            "PRESSURE_LEVEL_CAP^<PressureLevel>": {
+                "response": "PRESSURE_LEVEL_CAP^<PressureLevel>",
+                "description": "Set the pressure level cap setting (GH only)"
+            },
+            "PRESSURE_LINE_DISCONNECT": {
+                "response": "PRESSURE_LINE_DISCONNECT^<EnableStatus>",
+                "description": "Query whether line disconnection alarm is or is not enabled"
+            },
+            "PRESSURE_LINE_DISCONNECT^<EnableStatus>": {
+                "response": "PRESSURE_LINE_DISCONNECT^<EnableStatus>",
+                "description": "Set whether line disconnection alarm is or is not enabled"
+            },
+            "PRESSURE_OAL": {
+                "response": "PRESSURE_OAL^<PressureLevel>^<PressureValue>^<PressureUnits>",
+                "description": "Query occlusion alarm level setting"
+            },
+            "PRESSURE_OAL^<PressureLevel>": {
+                "response": "PRESSURE_OAL^<PressureLevel>^<PressureValue>^<PressureUnits>",
+                "description": "Set occlusion alarm level – using pressure level"
+            },
+            "PRESSURE_OAL^<PressureValue>^<PressureUnits>": {
+                "response": "PRESSURE_OAL^<PressureLevel>^<PressureValue>^<PressureUnits>",
+                "description": "Set occlusion alarm level – using pressure value"
+            },
+            "PRESSURE_OAL_AUTO": {
+                "response": "PRESSURE_OAL_AUTO^<EnableStatus>",
+                "description": "Query whether auto pressure setting is or is not enabled"
+            },
+            "PRESSURE_OAL_AUTO^<EnableStatus>": {
+                "response": "PRESSURE_OAL_AUTO^<EnableStatus>",
+                "description": "Enable / disable whether auto pressure setting is or is not enabled"
+            },
+            "PRESSURE_OAL_DFLT": {
+                "response": "PRESSURE_OAL_DFLT^<PressureLevel>^<PressureValue>^<PressureUnits>",
+                "description": "Query default occlusion alarm level – no pressure sensor fitted"
+            },
+            "PRESSURE_OAL_DFLT^<PressureLevel>": {
+                "response": "PRESSURE_OAL_DFLT^<PressureLevel>^<PressureValue>^<PressureUnits>",
+                "description": "Query default occlusion alarm level – no pressure sensor fitted"
+            },
+            "PRESSURE_OAL_DFLT^<PressureValue>^<PressureLevel>": {
+                "response": "PRESSURE_OAL_DFLT^<PressureLevel>^<PressureValue>^<PressureUnits>",
+                "description": "Query default occlusion alarm level – no pressure sensor fitted"
+            },
+            "PRESSURE_OAL_MAX": {
+                "response": "PRESSURE_OAL_MAX^<PressureLevel>^<PressureValue>^<PressureUnits>",
+                "description": "Query maximum occlusion alarm level"
+            },
+            "PRESSURE_OAL_MAX^<PressureLevel>": {
+                "response": "PRESSURE_OAL_MAX^<PressureLevel>^<PressureValue>^<PressureUnits>",
+                "description": "Query maximum occlusion alarm level"
+            },
+            "REMOTE_CFG": {
+                "response": "REMOTE_CFG^<EnableStatus>^<PermitStatus>",
+                "description": "Query remote configuration status and revision timeout."
+            },
+            "REMOTE_CFG^<EnableStatus>": {
+                "response": "REMOTE_CFG^<EnableStatus>^<CommsSecurityCode>^<PermitStatus>",
+                "description": "Disable remote configuration"
+            },
+            "REMOTE_CFG^<EnableStatus>^<CommsSecurityCode>": {
+                "response": "REMOTE_CFG^<EnableStatus>^<CommsSecurityCode>^<PermitStatus>",
+                "description": "Enable remote configuration"
+            },
+            "REMOTE_CTRL": {
+                "response": "REMOTE_CTRL^<EnableStatus>^<PermitStatus>^<TimeoutValue>^TimeoutUnits>",
+                "description": "Query remote control status and reversion timeout."
+            },
+            "REMOTE_CTRL^<EnableStatus>": {
+                "response": "REMOTE_CTRL^<EnableStatus>^<CommsSecurityCode>^<PermitStatus>^<TimeoutValue>^TimeoutUnits>",
+                "description": "Disable remote control"
+            },
+            "REMOTE_CTRL^<EnableStatus>^<CommsSecurityCode>": {
+                "response": "REMOTE_CTRL^<EnableStatus>^<CommsSecurityCode>^<PermitStatus>^<TimeoutValue>^TimeoutUnits>",
+                "description": "Enable remote control"
+            },
+            "REMOTE_TEST": {
+                "response": "REMOTE_TEST^<EnableStatus>",
+                "description": "Query remote test status."
+            },
+            "REMQUERY": {
+                "response": "REMQUERY^<ActivationStatus>^<RemQueryDescPtA>^<RemQueryDescPtB>^<RemQueryOptionA>^<RemQueryOptionB>",
+                "description": "Query activation status of remote query."
+            },
+            "REMQUERY^<ActivationStatus>": {
+                "response": "REMQUERY^<ActivationStatus>",
+                "description": "De-activate a remote query"
+            },
+            "REMQUERY^<ActivationStatus>^<RemQueryDescPtA>^<RemQueryDescPtB>^<RemQueryOptionA>^<RemQueryOptionB>": {
+                "response": "REMQUERY^<ActivationStatus>",
+                "description": "De-activate a remote query"
+            },
+            "REMQUERY_RESULT": {
+                "response": "REMQUERY_RESULT^<AvailabilityStatus>^<RemQueryResult>",
+                "description": "Query remote query result"
+            },
+            "RTC": {
+                "response": "RTC^<RTC_DateAndTime>",
+                "description": "Query current real time clock value"
+            },
+            "RTC^<RTC_DateAndTime>": {
+                "response": "RTC^<RTC_DateAndTime>",
+                "description": "Set real time clock"
+            },
+            "SYRFORCE": {
+                "response": "SYRFORCE^<ForceValue>^<ForceUnits>^<SensorVoltageValue>^<SensorOffsetVoltageValue>^<SensorVoltageUnits>^<SensorCurrentValue>^<SensorCurrentUnits>",
+                "description": "Query current syringe force reading"
+            },
+            "SYRFORCE_CALPT^<CalPtNo>": {
+                "response": "SYRFORCE_CALPT^<CalPtNo>^<CalNumPts>^<CalStatus>^<ForceValue>^<ForceUnits>^<SensorVoltageValue>^<SensorVoltageUnits>",
+                "description": "Query syringe force sensor calibration value"
+            },
+            "SYRINGE_BRAND": {
+                "response": "SYRINGE_BRAND^<SyrBrand>^<EnableStatus>^<SelectStatus>",
+                "description": "Query whether or not specified brand of syringe is enabled and selected."
+            },
+            "SYRINGE_BRAND^<SyrBrand>^<EnableStatus>": {
+                "response": "SYRINGE_BRAND^<SyrBrand>^<EnableStatus>",
+                "description": "Disable specified brand of syringe OR Enable specified brand of syringe without selecting it."
+            },
+            "SYRINGE_BRAND^<SyrBrand>^<EnableStatus>^<SelectStatus>": {
+                "response": "SYRINGE_BRAND^<SyrBrand>^<EnableStatus>^<SelectStatus>",
+                "description": "Enable and select specified brand of syringe."
+            },
+            "SYRINGE_BRAND_NAME": {
+                "response": "SYRINGE_BRAND_NAME^<SyrBrandNo>^<SyrBrand>^<SyrNumBrands>",
+                "description": "Query name of specified brand and number of brand available."
+            },
+            "SYRINGE_CLAMP": {
+                "response": "SYRINGE_CLAMP^<DiamValue>^<DiamUnits>^<AngleValue>^<AngleUnits>^<SensorVoltageValue>^<SensorVoltageUnits>",
+                "description": "Query syringe clamp diameter reading."
+            },
+            "SYRINGE_CLAMP_CALPT": {
+                "response": "SYRINGE_CLAMP_CALPT^<CalPtNo>^<CalNumPts>^<CalStatus>^<DiamValue>^<DiamUnits>^<SensorVoltageValue>^<SensorVoltageUnits>",
+                "description": "Query syringe clamp sensor calibration value."
+            },
+            "SYRINGE_CONFIRM": {
+                "response": "SYRINGE_CONFIRM^<SyrConfirmStatus>",
+                "description": "Query whether or not syringe is confirmed."
+            },
+            "SYRINGE_CONFIRM^<SyrConfirmStatus>": {
+                "response": "SYRINGE_CONFIRM^<SyrConfirmStatus>",
+                "description": "Confirm syringe."
+            },
+            "SYRINGE_CONFIRMABLE": {
+                "response": "SYRINGE_CONFIRMABLE^<SyrConfirmStatus>",
+                "description": "Query whether or not syringe can be confirmed."
+            },
+            "SYRINGE_COVER": {
+                "response": "SYRINGE_COVER^<ClosureStatus>",
+                "description": "Query whether or not syringe cover is closed."
+            },
+            "SYRINGE_COVER_FIT": {
+                "response": "SYRINGE_COVER_FIT^<FitStatus>",
+                "description": "Query whether or not cover is fitted."
+            },
+            "SYRINGE_COVER_FIT^<FitStatus>": {
+                "response": "SYRINGE_COVER_FIT^<FitStatus>",
+                "description": "Specify whether or not cover is fitted."
+            },
+            "SYRINGE_MODEL": {
+                "response": "SYRINGE_MODEL^<SyrBrand>^<SyrModel>^<EnableStatus>",
+                "description": "Query whether or not specified model of syringe is enabled."
+            },
+            "SYRINGE_MODEL^<SyrBrand>^<SyrModel>^<EnableStatus>": {
+                "response": "SYRINGE_MODEL^<SyrBrand>^<SyrModel>^<EnableStatus>",
+                "description": "Enable / disable and select / de-select specified model of syringe."
+            },
+            "SYRINGE_MODEL_NAME": {
+                "response": "SYRINGE_MODEL_NAME^<SyrBrand>^<SyrModelNo>^<SyrModel>^<SyrNumModels>",
+                "description": "Query name of model within specified brand and number available."
+            }
+        },
+        "arguments": {
+            "<AlarmCode>": {
+                "description": "Identifies the nature of an alarm in language-independent manner",
+                "values": [
+                    "AL_ACDIS",
+                    "AL_CALLB",
+                    "AL_COMTO",
+                    "AL_LDSCN",
+                    "AL_DRDIS",
+                    "AL_EMBAT",
+                    "AL_EOIKV",
+                    "AL_EOIST",
+                    "AL_FAULT",
+                    "AL_LBTAC",
+                    "AL_LWBAT",
+                    "AL_NOALM",
+                    "AL_OCCLU",
+                    "AL_NEOIN",
+                    "AL_PRDSC",
+                    "AL_RHIGH",
+                    "AL_SYRCO",
+                    "AL_TCITG",
+                    "AL_TITCA",
+                    "AL_TITNC",
+                    "AL_VTBIC",
+                    "AL_VTBIK",
+                    "AL_VTBIS"
+                ]
+            },
+            "<AlarmNature>": {
+                "description": "A description of the nature of an alarm",
+                "values": "str(30)"
+            },
+            "<AlarmNotification>": {
+                "description": "This code enables rapid reporting that something significant has happened to or within the syringe pump, i.e. sufficient to warrant further interrogation.",
+                "values": [
+                    "A",
+                    "-"
+                ]
+            },
+            "<AlarmOrigin>": {
+                "description": "A description of the origin of the alarm",
+                "values": "str(30)"
+            },
+            "<AudioVolume>": {
+                "description": "Specifies an audio volume level",
+                "values": [
+                    "LOW",
+                    "MED",
+                    "HIGH"
+                ]
+            },
+            "<CalNumPts>": {
+                "description": "The number of points in a given calibration procedure.",
+                "values": "int(3)"
+            },
+            "<CalPtNo>": {
+                "description": "A number that uniquely identifies a calibration point within a series of calibration points, where, for the calibration series:\n0 <= <CalPtNo> < <CalNumPts>",
+                "values": "int(3)"
+            },
+            "<CalStatus>": {
+                "description": "Specifies whether or not calibration is valid.",
+                "values": [
+                    "VALID",
+                    "NONVALID"
+                ]
+            },
+            "<CommsProtocolID>": {
+                "description": "Specifies the revision identifier of the communications protocol that is supported by the syringe pump.",
+                "values": "re(Asena Rev .+)"
+            },
+            "<CommsSecurityCode>": {
+                "description": "A character sequence containing a code that is used as a protection mechanism.",
+                "values": "str(4)"
+            },
+            "<RTC_DateAndTime>": {
+                "description": "Specifies a date and time retrieved from or used to set a clock",
+                "values": "DateAndTimeStamp"
+            },
+            "<DedicationSetting>": {
+                "description": "Specifies a dedication setting.",
+                "values": [
+                    "FULL",
+                    "SEMI",
+                    "NONE"
+                ]
+            },
+            "<AmountValue>": {
+                "description": "A numerical value that specifies an amount of a drug.",
+                "values": "float(8)"
+            },
+            "<AmountUnits>": {
+                "description": "The units associated with a drug amount.",
+                "values": [
+                    "ng",
+                    "ug",
+                    "mg",
+                    "U",
+                    "kU",
+                    "mmol",
+                    "OFF",
+                    "HANDSON",
+                    "HANDSON/OFF"
+                ]
+            },
+            "<DrugBolusRateDfltValue>": {
+                "description": "A numerical value that specifies the bolus rate that is used if such a value is not explicitly specified by the user.",
+                "values": [
+                    "bolusratevalue"
+                ]
+            },
+            "<DrugBolusVolume>": {
+                "description": "A numerical value that specifies the bolus rate that is used if such a value is not explicitly specified by the user.",
+                "values": [
+                    "bolusvolume",
+                    "OFF"
+                ]
+            },
+            "<ConcDfltValue>": {
+                "description": "A numerical value that specifies the concentration that shall be used if such a value is not explicitly specified by the user.",
+                "values": [
+                    "concvalue",
+                    "OFF"
+                ]
+            },
+            "<ConcMaxValue>": {
+                "description": "A numerical value that specifies the highest acceptable drug concentration.",
+                "values": [
+                    "concvalue",
+                    "OFF"
+                ]
+            },
+            "<ConcMinValue>": {
+                "description": "A numerical value that specifies the lowest acceptable drug concentration.",
+                "values": [
+                    "concvalue",
+                    "OFF"
+                ]
+            },
+            "<ConcUnits>": {
+                "description": "The units associated with a drug concentration.",
+                "values": [
+                    "ng/ml",
+                    "ug/ml",
+                    "mg/ml",
+                    "g/ml",
+                    "U/ml",
+                    "kU/ml",
+                    "mmol/ml"
+                ]
+            },
+            "<ConcValue>": {
+                "description": "A numerical value that specifies a drug concentration.",
+                "values": "float(8)"
+            },
+            "<DoseRateDfltValue>": {
+                "description": "A numerical value that specifies the dose rate that is used if such a value is not explicitly specified by the user.",
+                "values": "float(6),OFF"
+            },
+            "<DoseRateMaxValue>": {
+                "description": "A numerical value that specifies the highest acceptable dose rate.",
+                "values": "float(6),OFF"
+            },
+            "<DoseRateMinValue>": {
+                "description": "A numerical value that specifies the lowest acceptable dose rate.",
+                "values": "float(6),OFF"
+            },
+            "<DoseRateUnits>": {
+                "description": "The units associated with a drug dose rate.",
+                "values": [
+                    "ng/min",
+                    "ng/kg/min",
+                    "ug/min",
+                    "ug/kg/min",
+                    "ug/h",
+                    "ug/kg/h",
+                    "ug/24h",
+                    "ug/kg/24h",
+                    "mg/min",
+                    "mg/kg/min",
+                    "mg/h",
+                    "mg/kg/h",
+                    "mg/24h",
+                    "mg/kg/24h",
+                    "g/h",
+                    "g/24h",
+                    "U/min",
+                    "U/kg/min",
+                    "U/h",
+                    "U/kg/h",
+                    "U/24h",
+                    "U/kg/24h",
+                    "kU/24h",
+                    "mmol/h",
+                    "mmol/kg/h"
+                ]
+            },
+            "<DoseRateValue>": {
+                "description": "The numerical value associated with a drug dose rate",
+                "values": "float(6)"
+            },
+            "<DrugName>": {
+                "description": "The name of drug",
+                "values": "str(20)"
+            },
+            "<DrugOcclusionPressure>": {
+                "description": "Specifies the occlusion alarm pressure to be used when delivering the drug",
+                "values": "float(6),OFF"
+            },
+            "<DrugServiceLevel>": {
+                "description": "Identifies the level of drug functionality supported by the syringe pump",
+                "values": [
+                    "NONE",
+                    "NAMESONLY",
+                    "PROTOCOLS"
+                ]
+            },
+            "<NumDrugsDefined>": {
+                "description": "The number of drugs currently defined in the drug library",
+                "values": "int(3)"
+            },
+            "<NumDrugsEnabled>": {
+                "description": "The number of drugs currently defined in the drug library",
+                "values": "int(3)"
+            },
+            "<ActivationStatus>": {
+                "description": "Specifies whether or not something is activated",
+                "values": [
+                    "ACTIV",
+                    "DEACT"
+                ]
+            },
+            "<AvailabilityStatus>": {
+                "description": "Specifies whether or not something is available",
+                "values": [
+                    "AVAIL",
+                    "NOTAVAIL"
+                ]
+            },
+            "<ClosureStatus>": {
+                "description": "Specifies whether or not something is closed",
+                "values": [
+                    "OPEN",
+                    "CLOSED"
+                ]
+            },
+            "<EnableStatus>":{
+                "description": "Specifies whether something is enabled or disabled",
+                "values":[
+                    "ENABLED",
+                    "DISABLED"
+                ]
+            },
+            "<FitStatus>":{
+                "description": "Specifies whether or not something is fitted",
+                "values":[
+                    "FIT",
+                    "NOTFIT"
+                ]
+            },
+            "<PermitStatus>":{
+                "description": "Specifies whether or not something is permitted",
+                "values":[
+                    "NOPERMIT",
+                    "PERMIT"
+                ]
+            },
+            "<ProportionUnits>": {
+                "description": "The units associated with a proportion",
+                "values": "re(%)"
+            },
+            "<ProportionValue>": {
+                "description": "The numeric value associated with a proportion",
+                "values": "float(6)"
+            },
+            "<RelayCoilStatus>": {
+                "description": "Specifies the status of the coil of a relay",
+                "values": [
+                    "ENRG",
+                    "NOTENRG"
+                ]
+            },
+            "<ResponseTimeUnits>": {
+                "description": "The units associated with a response time",
+                "values": "str(5)"
+            },
+            "<ResponseTimeValue>": {
+                "description": "The numerical value associated with a response time",
+                "values": "int(5)"
+            },
+            "<SelectStatus>": {
+                "description": "Specifies whether or not something is selected.",
+                "values": [
+                    "SLCT",
+                    "NOTSLCT"
+                ]
+            },
+            "<SuccessStatus>": {
+                "description": "Specifies the result of a test.",
+                "values": [
+                    "FAIL",
+                    "PASS"
+                ]
+            },
+            "<TimeoutUnits>": {
+                "description": "The units associated with a timeout.",
+                "values": [
+                    "hrs",
+                    "mins",
+                    "s",
+                    "ms",
+                    "us"
+                ]
+            },
+            "<TimeoutValue>": {
+                "description": "The numerical value associated with a timeout.",
+                "values": "int(6)"
+            },
+            "<DisplayIlluminationLevel>": {
+                "description": "Specifies a display backlight illumination level.",
+                "values": [
+                    "FULL",
+                    "DIM",
+                    "OFF"
+                ]
+            },
+            "<BolusRateUnits>": {
+                "description": "The units associated with a bolus rate.",
+                "values": "str(6)"
+            },
+            "<BolusRateDfltValue>": {
+                "description": "A numerical value that specifies the bolus rate that is used if such a value is not explicitly specified by the user.",
+                "values": "float(6)"
+            },
+            "<BolusRateValue>": {
+                "description": "The numerical value associated with a bolus rate.",
+                "values": "float(6)"
+            },
+            "<BolusVolumeLimitValue>": {
+                "description": "The numerical value associated with a bolus volume limit.",
+                "values": "float(6)"
+            },
+            "<InductionAmount>": {
+                "description": "The numerical value associated with an induction.",
+                "values": "float(6),OFF"
+            },
+            "<InductionUnits>": {
+                "description": "The units associated with an infusion rate.",
+                "values": [
+                    "ng/ml",
+                    "ug/ml",
+                    "mg/ml",
+                    "g/ml",
+                    "U/ml",
+                    "kU/ml",
+                    "mmol/ml"
+                ]
+            },
+            "<InductionTime>": {
+                "description": "The units associated with an induction time.",
+                "values": "str(6)"
+            },
+            "<MaintenanceRate>": {
+                "description": "The units associated with a Maintenance rate.",
+                "values": "str(10)"
+            },
+            "<MaintenanceRateUnits>": {
+                "description": "The units associated with a Maintenance rate.",
+                "values": "str(6)"
+            },
+            "<PauseAfterInduction>": {
+                "description": "The Boolean associated with a pause after induction.",
+                "values": [
+                    "ENABLED",
+                    "DISABLED"
+                ]
+            },
+            "<InfusionMode>": {
+                "description": "Identifies the current infusion mode.",
+                "values": [
+                    "BAC",
+                    "BOL",
+                    "HLD",
+                    "IND",
+                    "KVO",
+                    "MLD",
+                    "SET",
+                    "TIT"
+                ]
+            },
+            "<InfusionRateUnits>": {
+                "description": "The units associated with an infusion rate.",
+                "values": "str(6)"
+            },
+            "<InfusionRateValue>": {
+                "description": "The numerical value associated with an infusion rate.",
+                "values": "float(6)"
+            },
+            "<InfusionTimeRemaining>": {
+                "description": "Specifies the time remaining before the current infusion reaches its End Of Infusion point.",
+                "values": "DurationStamp"
+            },
+            "<PurgeRateUnits>": {
+                "description": "The units associated with a purge rate.",
+                "values": "str(6)"
+            },
+            "<PurgeRateValue>": {
+                "description": "A numerical value associated with a purge rate.",
+                "values": "float(6)"
+            },
+            "<Vl_Units>": {
+                "description": "The units associated with Volume Infused.",
+                "values": "str(4)"
+            },
+            "<Vl_Value>": {
+                "description": "The numerical value associated with Volume Infused.",
+                "values": "float(8,2)"
+            },
+            "<VTBI_EndAction>": {
+                "description": "Specifies the action taken when VTBI completion occurs.",
+                "values": [
+                    "CONT",
+                    "KVO",
+                    "STOP"
+                ]
+            },
+            "<HospName>": {
+                "description": "The name of the hospital that owns or uses the syringe pump.",
+                "values": "str(30)"
+            },
+            "<InstSerialNo>": {
+                "description": "Syringe pump serial number.",
+                "values": "str(20)"
+            },
+            "<InstModelIdentifier>": {
+                "description": "Identifies the specific syringe pump model variant.",
+                "values": [
+                    "Asena CC",
+                    "Asena GH",
+                    "Asena GS",
+                    "Asena TIVA"
+                ]
+            },
+            "<ManufacturerName>": {
+                "description": "Identifies the name of the syringe pump manufacturer.",
+                "values": "re(ALARIS INTERNATIONAL)"
+            },
+            "<ProgComponentID>": {
+                "description": "Uniquely identifies a programmable component within a syringe pump.",
+                "values": [
+                    "MP",
+                    "SP",
+                    "TCICP"
+                ]
+            },
+            "<ServiceDate>": {
+                "description": "Specifies a date associated with servicing of a syringe pump.",
+                "values": "DateStamp"
+            },
+            "<ServiceMessage>": {
+                "description": "A user-specified message to be displayed when servicing is required.",
+                "values": "str(20)"
+            },
+            "<UnitReference>": {
+                "description": "A means of syringe pump identification that is provided by the user.",
+                "values": "str(20)"
+            },
+            "<UsageSinceColdStartValue>": {
+                "description": "The numerical value of a time relating to usage since the unit was last cold-started.",
+                "values": "int(6)"
+            },
+            "<UsageSinceUseMonResetValue>": {
+                "description": "The numerical value of a time relating to usage since the user usage monitor was last reset.",
+                "values": "int(6)"
+            },
+            "<UsageUnits>": {
+                "description": "The units associated with a usage parameter.",
+                "values": [
+                    "hrs",
+                    "mins",
+                    "s",
+                    "ms",
+                    "us"
+                ]
+            },
+            "<VersionID>": {
+                "description": "Uniquely identifies a version of a specific component within a syringe pump.",
+                "values": "re(v.+\\..+\\..+)"
+            },
+            "<KeyName>": {
+                "description": "Identifies a specific key on the keypad.",
+                "values": [
+                    "BOLUS",
+                    "DEC",
+                    "DECDEC",
+                    "INC",
+                    "INCINC",
+                    "MUTE",
+                    "ONOFF",
+                    "OPTIONS",
+                    "PRESSURE",
+                    "SOFTKEYA",
+                    "SOFTKEYB",
+                    "SOFTKEYC",
+                    "START",
+                    "STOP"
+                ]
+            },
+            "<PressStatus>": {
+                "description": "Specifies whether or not a key is pressed.",
+                "values": [
+                    "PRESS",
+                    "RELEASE"
+                ]
+            },
+            "<LatestLogEntryID>": {
+                "description": "The unique identification code associated with the most recent entry in a specified log.",
+                "values": "int(10)"
+            },
+            "<LogEntryDescription>": {
+                "description": "Details of a recorded log entry.",
+                "values": "str(30)"
+            },
+            "<LogEntryID>": {
+                "description": "Uniquely identifies a log entry within a syringe pump.",
+                "values": "int(10)"
+            },
+            "<LogEntryMnemonic>": {
+                "description": "Identifies the nature of a logging entry in a language-independent manner.",
+                "values": [
+                    "EV_ALARM",
+                    "EV_BATOP",
+                    "EV_BCKOF"
+                ]
+            },
+            "<LogTimeStamp>": {
+                "description": "Specifies the time at which an entry was made in the log.",
+                "values": "DateAndTimeStamp"
+            },
+            "<LogType>": {
+                "description": "Identifies the log that is being handled by a logging command.",
+                "values": [
+                    "EVENT",
+                    "KEY",
+                    "FLUID",
+                    "SRVCE"
+                ]
+            },
+            "<MaxNumLoggedRecords>": {
+                "description": "Specifies the maximum number of log records that can be accommodated.",
+                "values": "int(5)"
+            },
+            "<NumLoggedRecords>": {
+                "description": "Specifies number of logged records.",
+                "values": "int(5)"
+            },
+            "<MotorTestStatus>": {
+                "description": "Specifies what state the motor test is in.",
+                "values": [
+                    "UNDEFINED",
+                    "INIT",
+                    "RUNNING",
+                    "PASS",
+                    "FAIL"
+                ]
+            },
+            "<NurseCallMode>": {
+                "description": "Specifies action required to call nurse.",
+                "values": [
+                    "ENTOCALL",
+                    "DEENTOCALL"
+                ]
+            },
+            "<PatientServiceLevel>": {
+                "description": "Identifies the level of patient management services provided by the syringe pump in use.",
+                "values": [
+                    "NONE",
+                    "WEIGHTONLY"
+                ]
+            },
+            "<AngleUnits>": {
+                "description": "The units associated with an angle.",
+                "values": [
+                    "deg",
+                    "Min"
+                ]
+            },
+            "<AngleValue>": {
+                "description": "The numerical value of an angle.",
+                "values": "float(6)"
+            },
+            "<BatChargeUnits>": {
+                "description": "The units associated with a battery charge quantity.",
+                "values": [
+                    "Ah",
+                    "mAh",
+                    "UAh"
+                ]
+            },
+            "<BatChargeValue>": {
+                "description": "The numerical value of a battery charge quantity.",
+                "values": "float(6)"
+            },
+            "<CurrentUnits>": {
+                "description": "The units associated with a current.",
+                "values": [
+                    "A",
+                    "mA",
+                    "UA"
+                ]
+            },
+            "<CurrentValue>": {
+                "description": "The numerical value of a current",
+                "values": "float(6)"
+            },
+            "<DiamUnits>": {
+                "description": "The units associated with a diameter",
+                "values": [
+                    "mm"
+                ]
+            },
+            "<DiamValue>": {
+                "description": "The numerical value associated with a diameter",
+                "values": "float(6)"
+            },
+            "<DistanceUnits>": {
+                "description": "The units associated with a distance",
+                "values": [
+                    "M",
+                    "mm",
+                    "um"
+                ]
+            },
+            "<DistanceValue>": {
+                "description": "The numerical value associated with a diameter",
+                "values": "float(6)"
+            },
+            "<ForceUnits>": {
+                "description": "The units associated with a force",
+                "values": [
+                    "Kgf",
+                    "N"
+                ]
+            },
+            "<ForceValue>": {
+                "description": "The numerical value associated with a force",
+                "values": "float(6)"
+            },
+            "<InductionTimeUnits>": {
+                "description": "Same as time units",
+                "values": [
+                    "hrs",
+                    "mins",
+                    "s",
+                    "ms",
+                    "us"
+                ]
+            },
+            "<PressureLevel>": {
+                "description": "Specifies a pressure in terms of its bargraph level",
+                "values": [
+                    "L-",
+                    "L0",
+                    "L1",
+                    "L2",
+                    "L3",
+                    "L4",
+                    "L5",
+                    "L6",
+                    "L7",
+                    "L8",
+                    "L9",
+                    "L10"
+                ]
+            },
+            "<PressureUnits>": {
+                "description": "The units associated with a pressure",
+                "values": [
+                    "mmHg",
+                    "Pa"
+                ]
+            },
+            "<PressureValue>": {
+                "description": "The numerical value associated with a pressure",
+                "values": "float(6)"
+            },
+            "<TimeUnits>": {
+                "description": "The units associated with a time",
+                "values": [
+                    "hrs",
+                    "mins",
+                    "s",
+                    "ms",
+                    "us"
+                ]
+            },
+            "<TimeValue>": {
+                "description": "The numerical value associated with a time",
+                "values": "int(6)"
+            },
+            "<VoltageUnits>": {
+                "description": "The units associated with a voltage",
+                "values": [
+                    "V",
+                    "mV",
+                    "uV"
+                ]
+            },
+            "<VoltageValue>": {
+                "description": "The numerical value associated with a voltage",
+                "values": "float(6)"
+            },
+            "<VolumeUnits>": {
+                "description": "The units associated with a volume",
+                "values": [
+                    "l",
+                    "ml",
+                    "ul"
+                ]
+            },
+            "<VolumeValue>": {
+                "description": "The numerical value associated with a time",
+                "values": "float(6)"
+            },
+            "<WeightUnits>": {
+                "description": "The units associated with a voltage",
+                "values": [
+                    "kg",
+                    "mg",
+                    "ug"
+                ]
+            },
+            "<WeightValue>": {
+                "description": "The numerical value associated with a time",
+                "values": "float(6)"
+            },
+            "<MainsStatus>": {
+                "description": "Specifies whether or not AC mains is connected.",
+                "values": [
+                    "CON",
+                    "NOTCON"
+                ]
+            },
+            "<RemQueryDescLine1>": {
+                "description": "Remote query description – line 1.",
+                "values": "str(20)"
+            },
+            "<RemQueryDescLine2>": {
+                "description": "Remote query description – line 2.",
+                "values": "str(20)"
+            },
+            "<RemQueryOptionA>": {
+                "description": "Text displayed as part of a remote query – Option A.",
+                "values": "str(10)"
+            },
+            "<RemQueryOptionB>": {
+                "description": "Text displayed as part of a remote query – Option B.",
+                "values": "str(10)"
+            },
+            "<RemQueryResult>": {
+                "description": "Text that is identical to the remote query option text associated with the user's selection.",
+                "values": "str(10)"
+            },
+            "<SensorCurrentUnits>": {
+                "description": "The units associated with the current flowing through a sensor.",
+                "values": [
+                    "A",
+                    "mA",
+                    "UA"
+                ]
+            },
+            "<SensorCurrentValue>": {
+                "description": "The numerical value associated with the current flowing through a sensor.",
+                "values": "float(6)"
+            },
+            "<SensorOffsetVoltageUnits>": {
+                "description": "The units associated with the offset voltage output from a sensor.",
+                "values": [
+                    "V",
+                    "mV",
+                    "uV"
+                ]
+            },
+            "<SensorOffsetVoltageValue>": {
+                "description": "The numerical value associated with the offset voltage output from a sensor.",
+                "values": "float(6)"
+            },
+            "<SensorVoltageUnits>": {
+                "description": "The units associated with the voltage output from a sensor.",
+                "values": [
+                    "V",
+                    "mV",
+                    "uV"
+                ]
+            },
+            "<SensorVoltageValue>": {
+                "description": "The numerical value associated with the output from a sensor.",
+                "values": "float(6)"
+            },
+            "<SyrBrand>": {
+                "description": "The name of the brand of a syringe.",
+                "values": "str(20)"
+            },
+            "<SyrBrandNo>": {
+                "description": "The index number of a syringe brand within a series, where 0 <= <SyrBrandNo> <= <SyrNumBrands>.",
+                "values": "int(5)"
+            },
+            "<SyrConfirmStatus>": {
+                "description": "Specifies whether or not a syringe is (or can be) confirmed.",
+                "values": [
+                    "CONF",
+                    "NOTCONF"
+                ]
+            },
+            "<SyrModel>": {
+                "description": "The name of a model of a syringe.",
+                "values": "str(10)"
+            },
+            "<SyrModelNo>": {
+                "description": "The index number of a syringe model within a series, where 0 <= <SyrModelNo> <= <SyrNumModels>.",
+                "values": "int(5)"
+            },
+            "<SyrNumBrands>": {
+                "description": "The number of syringe brands available.",
+                "values": "int(5)"
+            },
+            "<SyrNumModels>": {
+                "description": "The number of syringe brands available within a specified brand.",
+                "values": "int(5)"
+            },
+            "<SyrRecognitionStatus>": {
+                "description": "Specifies whether or not a syringe is recognised.",
+                "values": [
+                    "REC",
+                    "NOTREC"
+                ]
+            },
+            "<DrvEngStatus>": {
+                "description": "Specifies whether or not the drive is currently engaged or disengaged",
+                "values": [
+                    "ENG",
+                    "NOTENG"
+                ]
+            },
+            "<PlngrPosnUnits>": {
+                "description": "The units associated with a plunger position",
+                "values": "distance units"
+            },
+            "<PlngrPosnValue>": {
+                "description": "The numerical value of a plunger position",
+                "values": "distance value"
+            },
+            "<LanguageCode>": {
+                "description": "Identifies a specific language",
+                "values": [
+                    "DUT",
+                    "ENG",
+                    "FRN",
+                    "GER",
+                    "ITA",
+                    "NOR",
+                    "POR",
+                    "SPN",
+                    "SWD"
+                ]
+            },
+            "<VSI_Name>": {
+                "description": "Identifies a specific visual status indicator",
+                "values": [
+                    "ALARM_MP",
+                    "ALARM_SP",
+                    "BATTERY",
+                    "HANDSET",
+                    "START",
+                    "STOP",
+                    "WARNING"
+                ]
+            },
+            "<VSI_State>": {
+                "description": "Identifies a specific VSI state",
+                "values": [
+                    "FLASH",
+                    "ON",
+                    "OFF"
+                ]
+            },
+            "<DrugNo>": {
+                "description": "Number of drug",
+                "values": "int(2)"
+            },
+            "<DrugBolusVolumeLimitValue>":{
+                "description": "Bolus volume limit value",
+                "values": "int(3)"
+            },
+            "<InductionValue>":{
+                "values": "float(6)"
+            },
+            "<InductionVolumeUnits>":{
+                "values": [
+                    "l",
+                    "ml",
+                    "ul"
+                ]
+            },
+            "<RemQueryDescPtA>":{
+                "values": "str(30)"
+            },
+            "<RemQueryDescPtB>":{
+                "values": "str(30)"
+            }
+        }
+    }
+}
