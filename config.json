@@ -839,37 +839,23 @@
             },
             "<DrugBolusRateDfltValue>": {
                 "description": "A numerical value that specifies the bolus rate that is used if such a value is not explicitly specified by the user.",
-                "values": [
-                    "bolusratevalue"
-                ]
+                "values": "float(6)"
             },
             "<DrugBolusVolume>": {
                 "description": "A numerical value that specifies the bolus rate that is used if such a value is not explicitly specified by the user.",
-                "values": [
-                    "bolusvolume",
-                    "OFF"
-                ]
+                "values": "float(6),OFF"
             },
             "<ConcDfltValue>": {
                 "description": "A numerical value that specifies the concentration that shall be used if such a value is not explicitly specified by the user.",
-                "values": [
-                    "concvalue",
-                    "OFF"
-                ]
+                "values": "float(8),OFF"
             },
             "<ConcMaxValue>": {
                 "description": "A numerical value that specifies the highest acceptable drug concentration.",
-                "values": [
-                    "concvalue",
-                    "OFF"
-                ]
+                "values": "float(8),OFF"
             },
             "<ConcMinValue>": {
                 "description": "A numerical value that specifies the lowest acceptable drug concentration.",
-                "values": [
-                    "concvalue",
-                    "OFF"
-                ]
+                "values": "float(8),OFF"
             },
             "<ConcUnits>": {
                 "description": "The units associated with a drug concentration.",

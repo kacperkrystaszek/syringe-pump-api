@@ -121,7 +121,7 @@ class Server:
     def run(self) -> None:
         self._socket.listen(1)
         clientsocket, address = self._socket.accept()
-        ack_message = f"Accepted connection from {address}. Ready to work."
+        ack_message = f"Accepted connection from {address}. Ready to work. \nTo start at port: start PORT(i.e. /dev/ttyUSB0 or COM1)!\nTo send command: pump PORT COMMAND(see config.json)!\nTo close pump: close PORT!\nRemember that '!' is command delimiter"
         self.send(clientsocket, ack_message)
         
         while True:

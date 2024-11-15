@@ -10,6 +10,7 @@ class Loopback:
         self._port = port
         self._commands = command_set
         self._arguments = arguments
+        self._parameters = {}
         
         self._packet_terminator = chr(int("0x0D", 16))
         self._response = self._set_default_response()
@@ -49,6 +50,7 @@ class Loopback:
         command = converted_command.split("|")[0].lstrip("!")
         splitted = command.split("^")
         main_part = splitted[0]
+        parameters = splitted[1:]
         caret_count = converted_command.count("^")
         
         response = None
@@ -57,6 +59,9 @@ class Loopback:
             if not (main_part in command_from_config and command_from_config.count("^") == caret_count):
                 continue
             response: str = description['response']
+            arguments = command_from_config.split("^")[1:]
+            for argument, received in zip(arguments, parameters):
+                self._parameters[argument] = received
             if response == command_from_config:
                 self._response = message
                 return
@@ -65,41 +70,15 @@ class Loopback:
         arguments = response.split("^")[1:]
         
         for argument in arguments:
-            arg_from_config: dict = self._arguments.get(argument)
             replacement = None
-            if "float" in arg_from_config['values']:
-                replacement = str(random.uniform(1.0, 10.0))
-            elif "int" in arg_from_config['values']:
-                replacement = str(random.randint(1, 10))
-            elif isinstance(arg_from_config['values'], list):
-                replacement = random.choice(arg_from_config['values'])
-            elif "str" in arg_from_config['values']:
-                max_length = int(arg_from_config['values'].split("(")[-1].rstrip(")"))
-                replacement = "".join(
-                    random.choice(
-                        string.ascii_lowercase + string.ascii_uppercase + string.digits
-                    ) for _ in range(random.randint(1, max_length))
-                )
-            elif "DateAndTimeStamp" in arg_from_config['values']:
-                year = 2024
-                month = random.randint(1, 12)
-                day = random.randint(1, 28)
-                hour = random.randint(0, 23)
-                minute = random.randint(0, 59)
-                second = random.randint(0, 59)
-                replacement = f"{year}-{month}-{day}T{hour}:{minute}:{second}"
-            elif "DateStamp" in arg_from_config['values']:
-                year = 2024
-                month = random.randint(1, 12)
-                day = random.randint(1, 28)
-                replacement = f"{year}-{month}-{day}"
-            elif "DurationStamp" in arg_from_config['values']:
-                hour = random.randint(0, 23)
-                minute = random.randint(0, 59)
-                second = random.randint(0, 59)
-                replacement = f"{hour}:{minute}:{second}"
+            saved_parameter = self._parameters.get(argument)
+            
+            if saved_parameter is not None:
+                replacement = saved_parameter
             else:
-                replacement = ""
+                arg_from_config: dict = self._arguments.get(argument)
+                replacement = self._create_random_replacement(arg_from_config)
+                
             response = response.replace(argument, replacement)
             
         frame_check_sequence = self.calculator.checksum(response.encode()) if self.calculator is not None else ""
@@ -108,6 +87,42 @@ class Loopback:
             self.convert_to_hex(f"!{response}|{frame_check_sequence}{self._packet_terminator}"),
             encoding="utf-8"
         )
+
+    def _create_random_replacement(self, arg_from_config: dict):
+        if "float" in arg_from_config['values']:
+            replacement = str(random.uniform(1.0, 10.0))
+        elif "int" in arg_from_config['values']:
+            replacement = str(random.randint(1, 10))
+        elif isinstance(arg_from_config['values'], list):
+            replacement = random.choice(arg_from_config['values'])
+        elif "str" in arg_from_config['values']:
+            max_length = int(arg_from_config['values'].split("(")[-1].rstrip(")"))
+            replacement = "".join(
+                        random.choice(
+                            string.ascii_lowercase + string.ascii_uppercase + string.digits
+                        ) for _ in range(random.randint(1, max_length))
+                    )
+        elif "DateAndTimeStamp" in arg_from_config['values']:
+            year = 2024
+            month = random.randint(1, 12)
+            day = random.randint(1, 28)
+            hour = random.randint(0, 23)
+            minute = random.randint(0, 59)
+            second = random.randint(0, 59)
+            replacement = f"{year}-{month}-{day}T{hour}:{minute}:{second}"
+        elif "DateStamp" in arg_from_config['values']:
+            year = 2024
+            month = random.randint(1, 12)
+            day = random.randint(1, 28)
+            replacement = f"{year}-{month}-{day}"
+        elif "DurationStamp" in arg_from_config['values']:
+            hour = random.randint(0, 23)
+            minute = random.randint(0, 59)
+            second = random.randint(0, 59)
+            replacement = f"{hour}:{minute}:{second}"
+        else:
+            replacement = ""
+        return replacement
         
     def _translate_to_hex(self, value: str) -> str:
         return str(hex(ord(value)).lstrip("0x")).upper()
