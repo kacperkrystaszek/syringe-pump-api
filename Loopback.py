@@ -90,9 +90,10 @@ class Loopback:
 
     def _create_random_replacement(self, arg_from_config: dict):
         if "float" in arg_from_config['values']:
-            replacement = str(random.uniform(1.0, 10.0))
+            replacement = str(random.uniform(1.0, 10.0))[:6]
         elif "int" in arg_from_config['values']:
-            replacement = str(random.randint(1, 10))
+            max_value = int(arg_from_config['values'].split("(")[-1].rstrip(")"))
+            replacement = str(random.randint(1, 10**max_value))
         elif isinstance(arg_from_config['values'], list):
             replacement = random.choice(arg_from_config['values'])
         elif "str" in arg_from_config['values']:
