@@ -4,8 +4,8 @@ import random
 import socket
 import re
 import time
+import traceback
 
-from serial import SerialException
 import serial
 
 from Loopback import Loopback
@@ -68,7 +68,8 @@ class Server:
             )
             self._pumps[port].start()
             self.send(clientsocket, f"Pump handler started for port {port}")
-        except (SerialException, RuntimeError, ValueError) as exc:
+        except Exception as exc:
+            self._logger.error(traceback.print_exc())
             self.send(clientsocket, str(exc), logging.ERROR)
         
     def handle_pump_command(self, clientsocket: socket.socket, match: re.Match, time_signature: int) -> None:

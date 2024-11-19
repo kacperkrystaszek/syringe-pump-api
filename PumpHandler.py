@@ -14,7 +14,8 @@ from exceptions.NoResponseError import NoResponseError
 
 
 class PumpHandler:    
-    def __init__(self, port: str, pump: serial.Serial | Loopback, crc_config: dict|None, command_set: dict, arguments: dict) -> None:        
+    def __init__(self, port: str, pump: serial.Serial | Loopback, crc_config: dict|None, command_set: dict, arguments: dict) -> None:
+        self.port = port    
         self.pump = pump
         self.logger = logging.getLogger(f"Server.PumpHandler.{port}")
         self.logger.setLevel(logging.DEBUG)
@@ -25,7 +26,7 @@ class PumpHandler:
         self._thread = threading.Thread(target=self._run, name=port)
         self._kill_thread = False
         
-        self._packet_terminator = chr(int("0x0D", 16))
+        self._packet_terminator = "0D"
         
         if crc_config is not None:
             self.calculator = Calculator(self._get_crc_config(crc_config))
@@ -160,10 +161,12 @@ class PumpHandler:
         
     def translate_command(self, command: str) -> bytes:
         if self.calculator is not None:
-            frame_check_sequence = self.calculator.checksum(command.encode())
+            frame_check_sequence = self.calculator.checksum(self.convert_to_hex(command).encode())
         else:
             frame_check_sequence = ""
-        return self.convert_to_hex(f"!{command}|{frame_check_sequence}{self._packet_terminator}").encode()
+        response = self.convert_to_hex(f"!{command}|{frame_check_sequence}")
+        response += self._packet_terminator
+        return response.encode()
     
     def _checksum_check(self, response: str) -> None:
         parts = response.split("|")
@@ -263,3 +266,5 @@ class PumpHandler:
             except NoResponseError as exc:
                 self._response_queue.append("ERROR: " + str(exc))
         
+    def __repr__(self):
+        return f"PumpHandler: {self.port}"

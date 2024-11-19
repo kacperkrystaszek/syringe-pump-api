@@ -1627,6 +1627,21 @@
             },
             "<RemQueryDescPtB>":{
                 "values": "str(30)"
+            },
+            "<VI_Value>": {
+                "description": "The numerical value associated with Volume Infuesed",
+                "values": "float(8,2)"
+            },
+            "<VI_Units>": {
+                "description": "The numerical value associated with Volume Infuesed",
+                "values": [
+                    "ng/ml",
+                    "ug/ml",
+                    "mg/ml",
+                    "g/ml",
+                    "U/ml",
+                    "kU/ml"
+                ]
             }
         }
     }

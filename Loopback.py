@@ -12,7 +12,7 @@ class Loopback:
         self._arguments = arguments
         self._parameters = {}
         
-        self._packet_terminator = chr(int("0x0D", 16))
+        self._packet_terminator = "0D"
         self._response = self._set_default_response()
         
         if crc_config is not None:
@@ -84,7 +84,7 @@ class Loopback:
         frame_check_sequence = self.calculator.checksum(response.encode()) if self.calculator is not None else ""
         
         self._response = bytes(
-            self.convert_to_hex(f"!{response}|{frame_check_sequence}{self._packet_terminator}"),
+            self.convert_to_hex(f"!{response}|{frame_check_sequence}")+self._packet_terminator,
             encoding="utf-8"
         )
 
