@@ -31,11 +31,11 @@ class Loopback:
         command = parts[0].lstrip("!")
         
         frame_check_sequence_from_response = parts[-1]
-        frame_check_sequence_from_response = frame_check_sequence_from_response.rstrip(self._packet_terminator)
         
         calculated_frame_check = self.calculator.checksum(command.encode())
+        calculated_frame_check = hex(calculated_frame_check).lstrip("0x").zfill(4)
         
-        if calculated_frame_check != int(frame_check_sequence_from_response):
+        if calculated_frame_check != frame_check_sequence_from_response:
             raise RuntimeError(
                 f"Checksums does not match.\nResponse: {message}\nExpected: {calculated_frame_check}\nReceived: {frame_check_sequence_from_response}"
             )
@@ -81,7 +81,11 @@ class Loopback:
                 
             response = response.replace(argument, replacement)
             
-        frame_check_sequence = self.calculator.checksum(response.encode()) if self.calculator is not None else ""
+        if self.calculator is not None:
+            frame_check_sequence = self.calculator.checksum(response.encode())
+            frame_check_sequence = hex(frame_check_sequence).lstrip("0x").zfill(4)
+        else:
+            frame_check_sequence = ""
         
         self._response = bytes(
             self.convert_to_hex(f"!{response}|{frame_check_sequence}")+self._packet_terminator,

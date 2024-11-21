@@ -2,36 +2,39 @@ import logging
 import re
 import threading
 import time
+import traceback
 import serial
 from crc import Calculator, Configuration
 
 from Loopback import Loopback
+from MessageToSend import MessageToSend
 from exceptions.ArgumentError import ArgumentError
+from exceptions.ChecksumError import ChecksumError
 from exceptions.CommandError import CommandError
-from exceptions.CommunicationLostError import ConnectionLostError
+from exceptions.PumpConnectionLostError import PumpConnectionLostError
 from exceptions.ConfigError import ConfigError
 from exceptions.NoResponseError import NoResponseError
 
 
 class PumpHandler:    
-    def __init__(self, port: str, pump: serial.Serial | Loopback, crc_config: dict|None, command_set: dict, arguments: dict) -> None:
+    def __init__(self, port: str, pump: serial.Serial|Loopback, crc_config: dict|None, command_set: dict, arguments: dict) -> None:
         self.port = port    
         self.pump = pump
-        self.logger = logging.getLogger(f"Server.PumpHandler.{port}")
-        self.logger.setLevel(logging.DEBUG)
         self._commands = command_set 
         self._arguments = arguments
-        self._to_send_queue = []
-        self._response_queue = []
-        self._thread = threading.Thread(target=self._run, name=port)
-        self._kill_thread = False
-        
-        self._packet_terminator = "0D"
-        
         if crc_config is not None:
             self.calculator = Calculator(self._get_crc_config(crc_config))
         else:
             self.calculator = None
+        
+        self.logger = logging.getLogger(f"Server.PumpHandler.{port}")
+        self.logger.setLevel(logging.DEBUG)
+        
+        self._to_send_queue: list[MessageToSend] = []
+        self._response_queue: list[str] = []
+        self._thread = threading.Thread(target=self._run, name=port)
+        self._kill_thread: bool = False
+        self._packet_terminator: str = "0D"
         
     def _get_crc_config(self, crc_config: dict[str, int|bool]) -> Configuration:
         return Configuration(**crc_config)
@@ -161,9 +164,11 @@ class PumpHandler:
         
     def translate_command(self, command: str) -> bytes:
         if self.calculator is not None:
-            frame_check_sequence = self.calculator.checksum(self.convert_to_hex(command).encode())
+            frame_check_sequence = self.calculator.checksum(command.encode())
+            frame_check_sequence = hex(frame_check_sequence).lstrip("0x").zfill(4)
         else:
             frame_check_sequence = ""
+            
         response = self.convert_to_hex(f"!{command}|{frame_check_sequence}")
         response += self._packet_terminator
         return response.encode()
@@ -173,13 +178,13 @@ class PumpHandler:
         command = parts[0].lstrip("!")
         
         frame_check_sequence_from_response = parts[-1]
-        frame_check_sequence_from_response = frame_check_sequence_from_response.rstrip(self._packet_terminator)
         
         calculated_frame_check = self.calculator.checksum(command.encode())
+        calculated_frame_check = hex(calculated_frame_check).lstrip("0x").zfill(4)
         
-        if calculated_frame_check != int(frame_check_sequence_from_response):
-            raise RuntimeError(
-                f"Checksum does not expectation.\nResponse: {response}\nExpected: {calculated_frame_check}\nReceived: {frame_check_sequence_from_response}"
+        if calculated_frame_check != frame_check_sequence_from_response:
+            raise ChecksumError(
+                f"Checksum does not match expectation.\nResponse: {response}\nExpected: {calculated_frame_check}\nReceived: {frame_check_sequence_from_response}"
             )
             
     def _check_for_escape_command(self, command: str):
@@ -189,8 +194,8 @@ class PumpHandler:
             return False
 
     def push_message(self, command: str, time_signature: int) -> None:
-        self._to_send_queue.append((command, time_signature))
-        self._to_send_queue.sort(key=lambda elem: elem[1])
+        self._to_send_queue.append(MessageToSend(command, time_signature))
+        self._to_send_queue.sort(key=lambda elem: elem.time)
         
     def get_response(self) -> str:
         while len(self._response_queue) == 0:
@@ -208,37 +213,39 @@ class PumpHandler:
             response = self.pump.read_until(self._packet_terminator.encode()).decode()
             elapsed = time.time() - start_time
             if elapsed >= 3 and not response:
-                raise ConnectionLostError("Device disconnected")
+                raise PumpConnectionLostError("Device disconnected")
         elif not response:
-            raise NoResponseError("No response from pump")
+            raise NoResponseError("No response from pump. Try again")
         
         return response
 
-    def send_message(self, command: str) -> None:
+    def send_message(self, message_to_send: MessageToSend) -> None:
+        command = message_to_send.command
+        
         if self._check_for_escape_command(command):
             self.pump.write(command.encode())
-            self._response_queue.append("Escape character sent. Aborting all current actions.")
-            return
+            return "Escape character sent. Aborting all current actions."
+        
         self.validate_command(command)        
         
         command_to_sent = self.translate_command(command)
-        self.logger.info(f"SENT: {command}")
         self.pump.write(command_to_sent)
+        self.logger.info(f"SENT: {command}")
         
         response = self._read_response(command_to_sent)
         
         if self._check_for_escape_command(response):
-            self._response_queue.append("ACK: ESCAPE COMMAND RECEIVED")
-            return
+            return "ACK: ESCAPE COMMAND RECEIVED"
         
         converted_response = self.convert_from_hex(response)
-        response_to_sent = converted_response.split("|")[0].lstrip("!")
+        main_response_part = converted_response.split("|")[0].lstrip("!")
         
         if self.calculator is not None:
             self._checksum_check(converted_response)
-        response = f"ACK: {response_to_sent}"
+        response = f"ACK: {main_response_part}"
+        self.logger.info(response)
         
-        self._response_queue.append(response)
+        return response
     
     def close(self):
         self.pump.close()
@@ -257,14 +264,18 @@ class PumpHandler:
             if len(self._to_send_queue) == 0:
                 continue
             try:
-                self.send_message(self._to_send_queue.pop(0)[0])
-            except (RuntimeError, ArgumentError, CommandError, ConfigError) as exc:
+                response = self.send_message(self._to_send_queue.pop(0))
+                self._response_queue.append(response)
+            except (ChecksumError, ArgumentError, CommandError, ConfigError, NoResponseError) as exc:
                 self._response_queue.append("ERROR: " + str(exc))
-            except ConnectionLostError as exc:
+            except PumpConnectionLostError as exc:
+                self._response_queue.append("ERROR: " + str(exc))
                 self._kill_thread = True
+            except Exception as exc:
+                self.logger.error(traceback.print_exc())
                 self._response_queue.append("ERROR: " + str(exc))
-            except NoResponseError as exc:
-                self._response_queue.append("ERROR: " + str(exc))
+                # self._kill_thread = True
         
     def __repr__(self):
         return f"PumpHandler: {self.port}"
+    

@@ -10,6 +10,10 @@ import serial
 
 from Loopback import Loopback
 from PumpHandler import PumpHandler
+from exceptions.BadServerCommandEndingError import BadServerCommandEndingError
+from exceptions.PortUsedError import PortUsedError
+from exceptions.PumpsFullError import PumpsFullError
+from exceptions.ServerConnectionLostError import ServerConnectionLostError
 
 
 class Server:    
@@ -44,9 +48,9 @@ class Server:
         port = match.group("port")
         try:
             if self._pumps.get(port) is not None:
-                raise RuntimeError("Pump is already initialized at this port")
+                raise PortUsedError(f"Pump is already initialized at this port. Port {port}")
             if len(self._pumps) == self._MAX_PUMPS:
-                raise ValueError("Max number of pumps if connected.")
+                raise PumpsFullError(f"Max number of pumps if connected. Max number {self._MAX_PUMPS}")
             
             if self._loopback:
                 time.sleep(random.uniform(0.5, 1))
@@ -68,6 +72,8 @@ class Server:
             )
             self._pumps[port].start()
             self.send(clientsocket, f"Pump handler started for port {port}")
+        except (PortUsedError, serial.SerialException, PumpsFullError) as exc:
+            self.send(clientsocket, str(exc))
         except Exception as exc:
             self._logger.error(traceback.print_exc())
             self.send(clientsocket, str(exc), logging.ERROR)
@@ -78,7 +84,7 @@ class Server:
         
         pump_handler = self._pumps.get(port)
         if pump_handler is None:
-            self.send(clientsocket, "No pump started at this port")
+            self.send(clientsocket, f"No pump started at this port. Port {port}")
             return
         
         pump_handler.push_message(command, time_signature)
@@ -87,8 +93,9 @@ class Server:
         self.send(clientsocket, response, level=level)
         
         if pump_handler.is_killed():
-            self.send(clientsocket, "Pump removed from server port mapping.")
+            pump_handler.close()
             self._pumps.pop(port)
+            self.send(clientsocket, f"Pump removed from server port mapping. Port {port}")
         
     def handle_close_command(self, clientsocket: socket.socket, match: re.Match) -> None:
         port = match.group("port")
@@ -117,7 +124,7 @@ class Server:
             self.handle_close_command(clientsocket, match)
             
         else:
-            self.send(clientsocket, "Unvalid message")
+            self.send(clientsocket, f"Unvalid message: {message}")
         
     def run(self) -> None:
         self._socket.listen(1)
@@ -126,9 +133,16 @@ class Server:
         self.send(clientsocket, ack_message)
         
         while True:
-            message = self.receive(clientsocket)
-            if message is None:
-                self._logger.info("Connection broken.")
+            try:
+                message = self.receive(clientsocket)
+            except ServerConnectionLostError as exc:
+                self._logger.error(str(exc))
+                break
+            except BadServerCommandEndingError as exc:
+                self._logger.error(str(exc))
+                continue
+            except Exception as exc:
+                self._logger.error(traceback.print_exc())
                 break
             time_signature = time.time()
             self._pool.apply_async(self.handle_request, [clientsocket, message, time_signature])
@@ -141,7 +155,9 @@ class Server:
         while command_delimiter not in self._buffer:
             data = clientsocket.recv(1024)
             if not data:
-                return None
+                raise ServerConnectionLostError("Connection broken")
+            if not data.endswith("!".encode()):
+                raise BadServerCommandEndingError(f"Bad server command. Message to server has to end with '!'. Received: {data.decode()}")
             self._buffer += data
             
         line, _, self._buffer = self._buffer.partition(command_delimiter)
@@ -151,7 +167,7 @@ class Server:
         self._logger.log(level, message)
         sent = clientsocket.send(f"{message}\n".encode())
         if sent == 0:
-            self._logger.info("Connection broken.")
+            self._logger.info("Connection broken")
             self.close()
             
     def close(self) -> None:
