@@ -274,7 +274,7 @@ class PumpHandler:
             except Exception as exc:
                 self.logger.error(traceback.print_exc())
                 self._response_queue.append("ERROR: " + str(exc))
-                # self._kill_thread = True
+                self._kill_thread = True
         
     def __repr__(self):
         return f"PumpHandler: {self.port}"

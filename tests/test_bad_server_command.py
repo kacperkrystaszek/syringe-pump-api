@@ -4,6 +4,7 @@ import socket
 def test_bad_server_command():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         sock.connect(('localhost', 4000))
+        data = sock.recv(1024)
         sock.sendall("bad server command!".encode())
         data = sock.recv(1024)
         print(data.decode())

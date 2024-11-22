@@ -163,9 +163,9 @@ class Loopback:
             elif rand == 2:
                 return bytes(chr(int("0x1B", 16)), encoding="utf-8")
             elif rand == 3:
-                time.sleep(3.1)
+                # time.sleep(3.1)
                 return bytes("", encoding="utf-8")
-            time.sleep(random.uniform(0.2, 0.5))
+            # time.sleep(random.uniform(0.2, 0.5))
             return self._response
         finally:
             self._response = self._set_default_response()

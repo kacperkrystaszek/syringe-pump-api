@@ -139,7 +139,7 @@ class Server:
                 self._logger.error(str(exc))
                 break
             except BadServerCommandEndingError as exc:
-                self._logger.error(str(exc))
+                self.send(clientsocket, str(exc), logging.ERROR)
                 continue
             except Exception as exc:
                 self._logger.error(traceback.print_exc())
@@ -156,12 +156,13 @@ class Server:
             data = clientsocket.recv(1024)
             if not data:
                 raise ServerConnectionLostError("Connection broken")
+            data = data.strip("\n".encode())
             if not data.endswith("!".encode()):
                 raise BadServerCommandEndingError(f"Bad server command. Message to server has to end with '!'. Received: {data.decode()}")
             self._buffer += data
             
         line, _, self._buffer = self._buffer.partition(command_delimiter)
-        return line.decode().strip("\n") + self.COMMAND_DELIMITER
+        return line.decode() + self.COMMAND_DELIMITER
             
     def send(self, clientsocket: socket.socket, message: str, level=logging.INFO) -> None:
         self._logger.log(level, message)
@@ -173,7 +174,6 @@ class Server:
     def close(self) -> None:
         self._logger.info("Closing server")
         for pump in self._pumps.values():
-            pump: serial.Serial | Loopback
             pump.close()
         self._socket.shutdown(socket.SHUT_RDWR)
         self._socket.close()
