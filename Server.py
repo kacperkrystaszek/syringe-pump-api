@@ -175,7 +175,10 @@ class Server:
         self._logger.info("Closing server")
         for pump in self._pumps.values():
             pump.close()
-        self._socket.shutdown(socket.SHUT_RDWR)
+        try:
+            self._socket.shutdown(socket.SHUT_RDWR)
+        except OSError:
+            ...
         self._socket.close()
         self._pool.close()
         
