@@ -53,7 +53,7 @@ class Server:
                 raise PumpsFullError(f"Max number of pumps if connected. Max number {self._MAX_PUMPS}")
             
             if self._loopback:
-                time.sleep(random.uniform(0.5, 1))
+                # time.sleep(random.uniform(0.5, 1))
                 port_handler = Loopback(
                     port=port, 
                     crc_config=self._config['pump_config']['crc_config'],
@@ -88,7 +88,9 @@ class Server:
             return
         
         pump_handler.push_message(command, time_signature)
+        self._logger.debug(f"Pushed message to queue. Port {port}")
         response = pump_handler.get_response()
+        self._logger.debug(f"Took response from queue. Port {port}")
         level = logging.ERROR if "ERROR" in response else logging.INFO
         self.send(clientsocket, response, level=level)
         
@@ -142,7 +144,7 @@ class Server:
                 self.send(clientsocket, str(exc), logging.ERROR)
                 continue
             except Exception as exc:
-                self._logger.error(traceback.print_exc())
+                traceback.print_exc()
                 break
             time_signature = time.time()
             self._pool.apply_async(self.handle_request, [clientsocket, message, time_signature])

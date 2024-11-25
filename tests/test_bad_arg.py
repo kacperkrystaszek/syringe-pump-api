@@ -8,7 +8,7 @@ def test_bad_arg():
         data = sock.recv(1024)
         sock.sendall("start COM1!".encode())
         data = sock.recv(1024)
-        sock.sendall("pump COM1 INF_HANDSFREE^BAD_ARG!".encode())
+        sock.sendall("pump COM1 DRUG_LIB^100!".encode())
         data = sock.recv(1024)
         print(data.decode())
         

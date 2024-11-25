@@ -220,29 +220,38 @@ class PumpHandler:
         return response
 
     def send_message(self, message_to_send: MessageToSend) -> None:
+        self.logger.debug(f"Starting to handle message. Message: {message_to_send}")
         command = message_to_send.command
         
+        self.logger.debug(f"Looking for escape command.")
         if self._check_for_escape_command(command):
             self.pump.write(command.encode())
             return "Escape character sent. Aborting all current actions."
         
+        self.logger.debug(f"Validating command.")
         self.validate_command(command)        
         
+        self.logger.debug(f"Translating message. {message_to_send}")
         command_to_sent = self.translate_command(command)
+
         self.pump.write(command_to_sent)
         self.logger.info(f"SENT: {command}")
         
+        self.logger.debug("Waiting for response.")
         response = self._read_response(command_to_sent)
+        self.logger.debug("Response read.")
         
         if self._check_for_escape_command(response):
             return "ACK: ESCAPE COMMAND RECEIVED"
         
+        self.logger.debug("Converting from hex.")
         converted_response = self.convert_from_hex(response)
         main_response_part = converted_response.split("|")[0].lstrip("!")
         
         if self.calculator is not None:
             self._checksum_check(converted_response)
         response = f"ACK: {main_response_part}"
+        self.logger.debug(f"Finished handling message. Response: {response}")
         self.logger.info(response)
         
         return response

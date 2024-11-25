@@ -8,7 +8,7 @@ def test_bad_pump_command():
         data = sock.recv(1024)
         sock.sendall("start COM1!".encode())
         data = sock.recv(1024)
-        sock.sendall("pump COM1 BAD_COMMAND!".encode())
+        sock.sendall("pump COM1 NON_EXISTENT_COMMAND_IN_CONFIG!".encode())
         data = sock.recv(1024)
         print(data.decode())
     

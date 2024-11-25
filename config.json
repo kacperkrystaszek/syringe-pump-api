@@ -2,7 +2,7 @@
     "server_config": {
         "server_ip": "localhost",
         "port": 4000,
-        "max_pumps": 16,
+        "max_pumps": 8,
         "loopback": true,
         "command_delimiter": "!"
     },

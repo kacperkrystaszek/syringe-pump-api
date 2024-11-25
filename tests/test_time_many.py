@@ -3,7 +3,7 @@ import socket
 import time
 
 
-commands = ["INF", "INF_BOLUS_CAP_RATE^1.356^ml/h", "INF_VTBI^ACTIV^1.356^ml^STOP", "INF_PURGE_RATE^1.356^ml/h", "INF_CAP_RATE^1.356^ml"]
+commands = ["INF", "ALARM", "AUDIO_QUIET", "AUDIO_VOL", "COMMS_PROTOCOL", "DISPLAY_ILLUM", "DRUG_LIB_NUMDRUGS", "DRUG_SELECT"]
 
 def many_at_once():
     results = []
@@ -11,15 +11,16 @@ def many_at_once():
         sock.connect(('localhost', 4000))
         sock.recv(1024)
         
-        for x in range(1, 17):
+        for x in range(1, 9):
             sock.sendall(f"start COM{x}!".encode())
             sock.recv(1024)
         
         for y in range(10):
             str_result = ""
-            for x in range(1, 17):
+            for x in range(1, 9):
                 random_command = random.choice(commands)
                 str_result += f"pump COM{x} {random_command}!"
+            print(str_result)
             sock.sendall(str_result.encode())
             start = time.perf_counter()
             print(start)
@@ -29,7 +30,7 @@ def many_at_once():
             print(d.decode())
             results.append(end)
             
-            for x in range(1, 16):
+            for x in range(1, 8):
                 sock.recv(1024)
             
     mean = sum(results)/len(results)
