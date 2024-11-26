@@ -14,8 +14,18 @@ def many_at_once():
         for x in range(1, 9):
             sock.sendall(f"start COM{x}!".encode())
             sock.recv(1024)
+
+        str_result = ""
+        for x in range(1, 9):
+            random_command = commands[x-1]
+            str_result += f"pump COM{x} {random_command}!"
+
+        sock.sendall(str_result.encode())
+        sock.recv(1024)
+        time.sleep(3)
+        sock.recv(8192)
         
-        for y in range(1, 6):
+        for y in range(1, 20):
             str_result = ""
             for x in range(1, 9):
                 random_command = commands[(x + y - 1) % 8]

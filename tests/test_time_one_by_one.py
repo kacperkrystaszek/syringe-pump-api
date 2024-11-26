@@ -10,6 +10,8 @@ def one_by_one():
         sock.recv(1024)
         sock.sendall("start COM1!".encode())
         sock.recv(1024)
+        sock.sendall(f"pump COM1 {commands[0]}!".encode())
+        sock.recv(1024)
         for command in commands*20:
             sock.sendall(f"pump COM1 {command}!".encode())
             start = time.perf_counter()
