@@ -1,6 +1,6 @@
 import logging
 import re
-import threading
+import multiprocessing
 import time
 import traceback
 import serial
@@ -30,9 +30,9 @@ class PumpHandler:
         self.logger = logging.getLogger(f"Server.PumpHandler.{port}")
         self.logger.setLevel(logging.DEBUG)
         
-        self._to_send_queue: list[MessageToSend] = []
-        self._response_queue: list[str] = []
-        self._thread = threading.Thread(target=self._run, name=port)
+        self._to_send_queue = multiprocessing.Queue()
+        self._response_queue = multiprocessing.Queue()
+        self._thread = multiprocessing.Process(target=self._run, name=port)
         self._kill_thread: bool = False
         self._packet_terminator: str = "0D"
         
@@ -194,13 +194,10 @@ class PumpHandler:
             return False
 
     def push_message(self, command: str, time_signature: int) -> None:
-        self._to_send_queue.append(MessageToSend(command, time_signature))
-        self._to_send_queue.sort(key=lambda elem: elem.time)
+        self._to_send_queue.put(MessageToSend(command, time_signature))
         
     def get_response(self) -> str:
-        while len(self._response_queue) == 0:
-            ...
-        return self._response_queue.pop(0)
+        return self._response_queue.get()
     
     def _read_response(self, command_to_sent: str) -> str:
         start_time = time.time()
@@ -258,6 +255,11 @@ class PumpHandler:
     
     def close(self):
         self.pump.close()
+        self._to_send_queue.close()
+        self._response_queue.close()
+        self._thread.terminate()
+        self._thread.join()
+        self._thread.close()
         self._kill_thread = True
         
     def start(self):
@@ -270,19 +272,19 @@ class PumpHandler:
         while True:
             if self._kill_thread:
                 return
-            if len(self._to_send_queue) == 0:
+            if self._to_send_queue.empty():
                 continue
             try:
-                response = self.send_message(self._to_send_queue.pop(0))
-                self._response_queue.append(response)
+                response = self.send_message(self._to_send_queue.get())
+                self._response_queue.put(response)
             except (ChecksumError, ArgumentError, CommandError, ConfigError, NoResponseError) as exc:
-                self._response_queue.append("ERROR: " + str(exc))
+                self._response_queue.put("ERROR: " + str(exc))
             except PumpConnectionLostError as exc:
-                self._response_queue.append("ERROR: " + str(exc))
+                self._response_queue.put("ERROR: " + str(exc))
                 self._kill_thread = True
             except Exception as exc:
                 self.logger.error(traceback.print_exc())
-                self._response_queue.append("ERROR: " + str(exc))
+                self._response_queue.put("ERROR: " + str(exc))
                 self._kill_thread = True
         
     def __repr__(self):
