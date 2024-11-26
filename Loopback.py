@@ -157,14 +157,14 @@ class Loopback:
         
     def read_until(self, _):
         try:
-            rand = random.randint(1, 50)
-            if rand == 1:
-                return bytes("", encoding="utf-8")
-            elif rand == 2:
-                return bytes(chr(int("0x1B", 16)), encoding="utf-8")
-            elif rand == 3:
-                # time.sleep(3.1)
-                return bytes("", encoding="utf-8")
+            # rand = random.randint(1, 50)
+            # if rand == 1:
+            #     return bytes("", encoding="utf-8")
+            # elif rand == 2:
+            #     return bytes(chr(int("0x1B", 16)), encoding="utf-8")
+            # elif rand == 3:
+            #     # time.sleep(3.1)
+            #     return bytes("", encoding="utf-8")
             # time.sleep(random.uniform(0.2, 0.5))
             return self._response
         finally:
